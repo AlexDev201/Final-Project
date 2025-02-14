@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import Styled from "styled-components";
-
+import { Link } from 'react-router-dom';
 
 const Wrapper = Styled.div`
     display: flex;
@@ -20,11 +21,9 @@ const Header = Styled.header`
     background-color: #f9d77e;
     padding: 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height:60px;
-    border-radius:12px;
+    height: 65px;
+    border-radius: 12px;
 `;
-
-
 
 const Logo = Styled.img`
     height: 50px;
@@ -37,7 +36,7 @@ const Logo = Styled.img`
 const Title = Styled.h1`
     margin: 0;
     color: #4e342e;
-    font-size: 1.2rem;
+    font-size: 2.3rem;
     text-align: center;
 `;
 
@@ -46,23 +45,23 @@ const Main = Styled.main`
     justify-content: center;
     align-items: center;
     flex: 1;
-    background: radial-gradient(circle, white , white );
+    background: radial-gradient(circle, white, white);
     padding: 1rem;
 `;
 
 const Container = Styled.div`
-    background-color: beige;
+    background-color: white;
     border-radius: 10px;
-    box-shadow:  0 0 20px 5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
     padding: 1.5rem;
     width: 100%;
     max-width: 400px;
-    border : 1px solid grey;
+    border: 1px solid grey;
 `;
 
 const FormTitle = Styled.h2`
     margin-bottom: 1rem;
-    color: #4e342e;
+    color: black;
     text-align: center;
 `;
 
@@ -74,7 +73,7 @@ const Form = Styled.form`
 
 const Label = Styled.label`
     font-weight: 500;
-    color: #795548;
+    color: black;
     margin-bottom: 0.23rem;
     padding-bottom: 0.23rem;
 `;
@@ -88,11 +87,22 @@ const Input = Styled.input`
     color: #4e342e;
     font-size: 0.9rem;
     transition: border-color 0.3s;
-    
 
     &:focus {
         outline: none;
         border-color: #ffb300;
+    }
+`;
+
+const StyledLink = Styled(Link)`
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    font-size: 0.7rem;
+    margin-top: 0.5rem;
+
+    &:hover {
+        color: #f79d60;
     }
 `;
 
@@ -118,41 +128,79 @@ const Button = Styled.button`
     }
 `;
 
+const ErrorMessage = Styled.p`
+    color: #d32f2f;
+    font-size: 0.8rem;
+    margin: 0.5rem 0;
+    text-align: center;
+`;
 
 const Footer = Styled.footer`
     background-color: #f9d77e;
     color: #4e342e;
     text-align: center;
-    padding: 0.2rem;
-    font-size: 0.73rem;
-    border-radius:12px;
+    padding: 0;
+    font-size: 0.75rem;
+    border-radius: 12px;
 `;
 
-
 const RecuperarContraseña = () => {
-    // Estado para el correo electrónico y mensaje
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    // Función de envío de formulario
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (email === "usuario@example.com") {
-            setMessage("Se ha enviado un enlace para recuperar tu contraseña a tu correo.");
-        } else {
-            setMessage("No se encuentra una cuenta con ese correo.");
+        setIsLoading(true);
+        setError('');
+        setMessage('');
+
+        // Validación básica del email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError('Por favor, ingrese un correo electrónico válido');
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/users/password_reset/', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: email
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('email', email);
+                setMessage('Se ha enviado un código a tu correo electrónico');
+                setTimeout(() => {
+                    window.location.href = 'OTP_CODE';
+                }, 2000);
+            } else {
+                setError(data.message || "Error al enviar el correo");
+            }
+        } catch (err) {
+            setError("Error de conexión. Por favor, intente nuevamente.");
+            console.error("Error al enviar el correo", err);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <>
         <Wrapper>
             <Header className="header">
                 <Logo src="src/img/Colmenares_del_eje_logo.png" alt="logo" className="logo" />
                 <Title className="header-title">Colmenares del Eje</Title>
             </Header>
 
-          
             <Main className="main">
                 <Container className="login-container">
                     <FormTitle>Recuperar Contraseña</FormTitle>
@@ -166,23 +214,29 @@ const RecuperarContraseña = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
+                            disabled={isLoading}
                             className="input"
                         />
-                        {message && <p className="message">{message}</p>}
-                        <Button type="submit" className="button">Enviar correo</Button>
+                        {error && <ErrorMessage>{error}</ErrorMessage>}
+                        {message && <p style={{ color: 'green', textAlign: 'center' }}>{message}</p>}
+                        <Button 
+                            type="submit" 
+                            className="button"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Enviando...' : 'Enviar correo'}
+                        </Button>
+                        <StyledLink to="/ConfirmCell">¿Olvidaste tu correo?</StyledLink>
                     </Form>
                 </Container>
             </Main>
 
-            
             <Footer className="footer">
                 <h2>Colmenares del Eje</h2>
-                <p>© Todos los derechos reservados</p>
+                <p>@2025 Todos los derechos reservados</p>
             </Footer>
-            </Wrapper> 
-        </>
+        </Wrapper>
     );
 };
 
-
-export default RecuperarContraseña; 
+export default RecuperarContraseña;

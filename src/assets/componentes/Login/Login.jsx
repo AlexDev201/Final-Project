@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import Styled from "styled-components";
 
@@ -9,7 +9,6 @@ const Wrapper = Styled.div`
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
 `;
 
 const Header = Styled.header`
@@ -20,10 +19,13 @@ const Header = Styled.header`
     background-color: #f9d77e;
     padding: 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height:65px;
-    border-radius:12px;
+    height: 65px;
+    border-radius: 0 0 12px 12px;
 
-   
+    @media (max-width: 768px) {
+        flex-direction: column;
+        height: auto;
+        padding: 1rem;
     }
 `;
 
@@ -33,6 +35,12 @@ const Logo = Styled.img`
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
+
+    @media (max-width: 768px) {
+        position: static;
+        transform: none;
+        margin-bottom: 10px;
+    }
 `;
 
 const Title = Styled.h1`
@@ -40,6 +48,10 @@ const Title = Styled.h1`
     color: #4e342e;
     font-size: 2.3rem;
     text-align: center;
+
+    @media (max-width: 768px) {
+        font-size: 1.8rem;
+    }
 `;
 
 const Main = Styled.main`
@@ -48,42 +60,42 @@ const Main = Styled.main`
     align-items: center;
     flex: 1;
     padding: 1rem;
-    background-image :url("src/img/fondo(1).svg");
+    background-image: url("src/img/fondo(1).svg");
+    background-size: cover;
+    background-position: center;
+
+    @media (max-width: 768px) {
+        padding: 0.5rem;
+    }
 `;
 
 const LoginContainer = Styled.div`
     background-color: white;
     border-radius: 10px;
-    box-shadow:  0 0 20px 5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
     padding: 1.5rem;
     width: 100%;
     max-width: 400px;
-    border : 1px solid grey;
-    
-`;
+    border: 1px solid grey;
 
-const FormTitle = Styled.h2`
-    margin-bottom: 1rem;
-    color: #4e342e;
-    text-align: center;
+    @media (max-width: 480px) {
+        padding: 1rem;
+        max-width: 90%;
+    }
 `;
-
 
 const FormLogin = Styled.form`
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    
 `;
-
-
 
 const Input = Styled.input`
     width: 100%;
     padding: 0.5rem;
     border: 1px solid #ffcc80;
     border-radius: 6px;
-    background-color:rgb(243, 243, 242);
+    background-color: rgb(243, 243, 242);
     color: #4e342e;
     font-size: 0.9rem;
     transition: border-color 0.3s;
@@ -116,7 +128,7 @@ const Button = Styled.button`
 
 const StyledLink = Styled(Link)`
     text-decoration: none;
-    color:rgb(0, 0, 0);
+    color: rgb(0, 0, 0);
     text-align: center;
     font-size: 0.7rem;
     margin-top: 0.5rem;
@@ -137,36 +149,54 @@ const Footer = Styled.footer`
     background-color: #f9d77e;
     color: #4e342e;
     text-align: center;
-    padding: 0.rem;
+    padding: 0.5rem;
     font-size: 0.75rem;
-    border-radius:12px;
+    border-radius: 12px 12px 0 0;
+
+    @media (max-width: 768px) {
+        font-size: 0.6rem;
+        padding: 0.3rem;
+    }
 `;
 
-
-const LoginForm = () => {
-    const [identificacion, setIdentificacion] = useState("");
+const Login = () => {
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError("");
 
-        const storedUser = JSON.parse(localStorage.getItem("userData"));
+        try {
+            const response = await fetch("http://127.0.0.1:8000/users/login/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                }),
+            });
 
-        if (storedUser) {
-            if (
-                storedUser.identificacion === identificacion &&
-                storedUser.password === password
-            ) {
-                setError("");
-                alert("Inicio de sesión exitoso");
-                navigate("/Dashboard");
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem("accessToken", data.access_token);
+                localStorage.setItem("refreshToken", data.refresh_token);
+                localStorage.setItem("username", data.username);
+                window.location.href = "/Dashboard";
             } else {
-                setError("Identificación o contraseña incorrectos");
+                setError(data || "Error al iniciar sesión");
             }
-        } else {
-            setError("No se encuentran datos de registro");
+        } catch (err) {
+            setError("Error de conexión. Por favor, intente nuevamente.");
+            console.error("Error durante el inicio de sesión:", err);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -180,23 +210,15 @@ const LoginForm = () => {
             <Main>
                 <LoginContainer>
                     <FormLogin onSubmit={handleLogin}>
-                        
-                        
-                      
                         <Input
                             type="text"
-                            id="usuario"
-                            name="Usuario"
                             placeholder="Usuario"
-                            value={identificacion}
-                            onChange={(e) => setIdentificacion(e.target.value)}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
 
-                        
                         <Input
                             type="password"
-                            id="password"
-                            name="password"
                             placeholder="Contraseña"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -204,18 +226,22 @@ const LoginForm = () => {
 
                         {error && <ErrorMessage>{error}</ErrorMessage>}
 
-                        <Button type="submit">Iniciar Sesión</Button>
-                        <StyledLink to="/RecuperarContraseña">¿Olvidaste tu contraseña?</StyledLink>
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? "Cargando..." : "Iniciar Sesión"}
+                        </Button>
+                        <StyledLink to="/RecuperarContraseña">
+                            ¿Olvidaste tu contraseña?
+                        </StyledLink>
                     </FormLogin>
                 </LoginContainer>
             </Main>
 
             <Footer>
-                <h2> Colmenares del Eje</h2>
-                <p> @2025 Todos los derechos reservados</p>
+                <h2>Colmenares del Eje</h2>
+                <p>@2025 Todos los derechos reservados</p>
             </Footer>
         </Wrapper>
     );
 };
 
-export default LoginForm;
+export default Login;

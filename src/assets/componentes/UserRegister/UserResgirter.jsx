@@ -1,301 +1,499 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Styled from 'styled-components';
-import { Navigate } from 'react-router-dom'; // Asegúrate de que Navigate esté importado
+import { NavLink } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
+import { useRef } from 'react';
 
 
-/*Estilos de formulario de registro*/
 
+//Estilos del modulo
 const Wrapper = Styled.div`
-display: flex;
-flex-direction: column;
-min-height: 100vh; /* Asegura que el contenedor ocupe toda la altura de la pantalla */
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+    width: 100%;
+    margin: 0;
+    padding: 0;
 `;
-
-
 
 const Header = Styled.header`
     display: flex;
     align-items: center;
-    justify-content: center;
-    position: relative;
+    padding-right: 30px;
     background-color: #f9d77e;
-    padding: 0.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height:60px;
-    border-radius:12px;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 0 0 12px 12px;
 `;
 
 const Logo = Styled.img`
     height: 50px;
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+`;
+
+const NavContainer = Styled.nav`
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-grow: 1;
+    padding: 5px;
+`;
+
+const LinkNav = Styled(NavLink)`
+    text-decoration: none;
+    color: #4e342e;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    padding: 20px;
+    font-size: 2.0rem;
+
+    &:hover {
+        color: orange;
+        transform: scale(1.10);
+    }
+
+    &.active {
+        transform: scale(1.1);
+        font-weight: bold;
+        font-size: 45px;
+        background-color :rgb(246, 201, 110);
+
+    }
 `;
 
 const Title = Styled.h1`
     margin: 0;
-    color: #4e342e;
-    font-size: 1.2rem;
+    color: rgb(0, 0, 0);
+    font-size: 1.8rem;
     text-align: center;
+    margin-bottom: 1.5rem;
 `;
+
 const Main = Styled.main`
+    background-color: #f9d77e;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
     flex: 1;
     background: radial-gradient(circle, white, white);
     padding: 1rem;
+    gap: 2.6rem;
+    margin: auto;
+    max-width: 1400px;
 `;
 
-const RegisterContainer = Styled.div`
-        background-color:beige;
-        border-radius: 15px;
-         box-shadow:  0 0 20px 5px rgba(0, 0, 0, 0.74);
-        padding: 2rem;
-        max-width: 500px;
-        width: 100%;
-        text-align: center;
-        border: 1px solid b;
+const FormContainer = Styled.div`
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    flex: 3;
+    min-width: 600px;
+    border: 1px solid grey;
+    margin-left: 3.9rem;
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
 `;
 
-
-
-const FormTitle = Styled.h2`
-        text-align: center;
-        padding-bottom: 1rem;
-`;
-
-const FormRegister = Styled.form`
-        display: flex;
-        flex-direction: column;
-
+const Form = Styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 `;
 
 const Label = Styled.label`
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: #795548;
-        text-align: left;
+    font-weight: 500;
+    color: rgb(0, 0, 0);
+    text-align: left;
 `;
 
-
 const Input = Styled.input`
-        width: 100%;
-        padding: 0.75rem;
-        margin-bottom: 1.5rem;
-        border: 1px solid #ffcc80;
-        border-radius: 10px;
-        font-size: 1rem;
-        background-color: #fffde7;
-        color: #4e342e;
-        transition: border-color 0.3s;
-        &:focus {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ffcc80;
+    border-radius: 10px;
+    background-color: #fffde7;
+    color: #4e342e;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    &:focus {
         outline: none;
         border-color: #ffb300;
+    }
+`;
+
+const Select = Styled.select`
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ffcc80;
+    border-radius: 10px;
+    background-color: #fffde7;
+    color: #4e342e;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
 `;
 
 const Button = Styled.button`
     background-color: #f9d77e;
     border: none;
-    padding: 0.6rem;
-    border-radius: 6px;
+    padding: 0.8rem;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4e342e;
     transition: background-color 0.3s;
-    width: 100%;
-    margin-top: 0.5rem;
-
     &:hover {
-        background-color: #f79d60;
-    }
-
-    &:disabled {
-        background-color: #ddd;
-        cursor: not-allowed;
+        background-color: #f8c150;
     }
 `;
 
+const Aside = Styled.aside`
+    width: 350px;
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid gray;
+    font-size: 1.6rem;
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+`;
 
-
-
-
+const ProfileImage = Styled.img`
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f9d77e;
+    border: 1px solid grey;
+`;
 
 const Footer = Styled.footer`
     background-color: #f9d77e;
     color: #4e342e;
     text-align: center;
-    padding: 0.3rem;
-    font-size: 0.75rem;
-    border-radius:12px;
+    padding: 0.2rem;
+    font-size: 0.76rem;
+    border-radius: 12px;
 `;
 
 
+//Estilos del PopUp
+const PopupOverlay = Styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: ${props => props.$isVisible ? 'flex' : 'none'};
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+`;
 
+const PopupContent = Styled.div`
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    width: 400px;
+    transform: ${props => props.$isVisible ? 'scale(1)' : 'scale(0.1)'};
+    transition: transform 0.4s ease-in-out;
+`;
 
+const SuccessIcon = Styled.div`
+    width: 80px;
+    height: 80px;
+    margin: -40px auto 20px;
+    border-radius: 50%;
+    background: #f9d77e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &::after {
+        content: '✓';
+        font-size: 40px;
+        color: white;
+    }
+`;
 
+const PopupTitle = Styled.h2`
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+`;
 
+const PopupButton = Styled.button`
+    background: #f9d77e;
+    color: black;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    
+    &:hover {
+        background: #f8c150;
+    }
+`;
+
+//Ojito para el password
+
+const PasswordInputWrapper = Styled.div`
+    position: relative;
+    width: 100%;
+`;
+
+const PasswordToggleIcon = Styled.div`
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #4e342e;
+`;
 
 function UserRegister() {
-  const [formData, setFormData] = useState({
-    nombre: '',
-    identificacion: '',
-    correo: '',
-    telefono: '',
-    fecha_nacimiento: '',
-    contacto_emergencia: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [redirectToLogin, setRedirectToLogin] = useState(false);
+    //Variable para el reseteo del formulario
+    const formRef = useRef(null);
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData({ ...formData, [id]: value });
-  };
+    const [showPopup, setShowPopup] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    //Guadamos la informacion del formulario
+    const [formDataRegister, setFormDataRegister] = useState({
+        nombreApicultor: '',
+        apellidoApicultor: '',
+        identificacion: '',
+        telefono: '',
+        correo: '',
+        contactoEmergencia: '',
+        fechaNacimiento: '',
+        password: '',
+        confirmPassword: ''
+    });
 
-    // Validación para asegurarse de que todos los campos estén llenos
-    for (let key in formData) {
-      if (formData[key] === '') {
-        alert(`El campo ${key} es obligatorio.`);
-        return;
-      }
-    }
+   
+    // New state for password visibility
+    const [showPassword, setShowPassword] = useState({
+        password: false,
+        confirmPassword: false
+    });
 
-    if (formData.password !== formData.confirmPassword) {
-      alert('Las contraseñas no coinciden');
-      return;
-    }
+    // Toggle password visibility
+    const togglePasswordVisibility = (field) => {
+        setShowPassword(prev => ({
+            ...prev,
+            [field]: !prev[field]
+        }));
+    };
 
-    // Guardamos los datos en el localStorage
-    localStorage.setItem('userData', JSON.stringify(formData));
 
-    // Actualizamos el estado para redirigir
-    setRedirectToLogin(true);
-  };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormDataRegister(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
 
-  // Redirigir a la página de inicio de sesión si el estado es true
-  if (redirectToLogin) {
-    return <Navigate to="/" />;
-  }
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
-  return (
-    <>
-      <Wrapper>
-      <Header className="header">
-        <Logo src="src/img/Colmenares_del_eje_logo.png" alt="logo" />
-        <h1 className="header-title">Colmenares del Eje</h1>
-      </Header>
+        formRef.current.reset();
+        
+       
 
-      <Main className="main-register">
-        <RegisterContainer className="register-container">
-          <FormTitle className="form-title">Regístrate</FormTitle>
-          <FormRegister  onSubmit={handleSubmit}>
-            <Label htmlFor="nombre" className="label">Nombre</Label>
-            <Input
-              type="text"
-              id="nombre"
-              placeholder="Ingrese su nombre completo"
-              className="input"
-              value={formData.nombre}
-              onChange={handleInputChange}
-            />
+        
 
-            <Label htmlFor="identificacion" className="label">Identificación</Label>
-            <Input
-              type="text"
-              id="identificacion"
-              placeholder="Ingrese su identificación"
-              className="input"
-              value={formData.identificacion}
-              onChange={handleInputChange}
-              required
-            />
+        setFormDataRegister({
+            nombreApicultor: '',
+            apellidoApicultor: '',
+            identificacion: '',
+            telefono: '',
+            correo: '',
+            nombreContactoEmergencia: '',
+            contactoEmergencia: '',
+            fechaNacimiento: '',
+            password : '',
+            confirmPassword : ''
+        });
 
-            <Label htmlFor="correo" className="label">Correo</Label>
-            <Input
-              type="email"
-              id="correo"
-              placeholder="Ingrese su correo"
-              className="input"
-              value={formData.correo}
-              onChange={handleInputChange}
-              required
-            />
 
-            <Label htmlFor="telefono" className="label">Teléfono</Label>
-            <Input
-              type="text"
-              id="telefono"
-              placeholder="Ingrese su teléfono"
-              className="input"
-              value={formData.telefono}
-              onChange={handleInputChange}
-              required
-            />
+        // Mostrar popup de éxito
+        setShowPopup(true);
 
-            <Label htmlFor="fecha_nacimiento" className="label">Fecha de nacimiento</Label>
-            <Input
-              type="date"
-              id="fecha_nacimiento"
-              className="input"
-              value={formData.fecha_nacimiento}
-              onChange={handleInputChange}
-              required
-            />
+    };
+    
 
-            <Label htmlFor="contacto_emergencia" className="label">Contacto de emergencia</Label>
-            <Input
-              type="text"
-              id="contacto_emergencia"
-              placeholder="Ingrese su contacto de emergencia"
-              className="input"
-              value={formData.contacto_emergencia}
-              onChange={handleInputChange}
-              required
-            />
+    const closePopup = () => {
+        setShowPopup(false);
+    };
 
-            <Label htmlFor="password" className="label">Contraseña</Label>
-            <Input
-              type="password"
-              id="password"
-              placeholder="Ingrese su contraseña"
-              className="input"
-              value={formData.password}
-              onChange={handleInputChange}
-              required
-              minLength={8}
-            />
+    return (
+        <Wrapper>
+            <Header>
+                <Logo src="src/img/Colmenares_del_eje_logo.png" alt="Logo" />
+                <NavContainer>
+                    <LinkNav to='/UserRegister'>Crear Apicultor</LinkNav>
+                    <LinkNav to='/ViewApicultor'>Visualizar Apicultor</LinkNav>
+                    <LinkNav to='/ScanQR'>Vista Apicultor</LinkNav>
+                </NavContainer>
+            </Header>
+            <Main>
+                <FormContainer>
+                    <Form onSubmit={handleSubmit} ref={formRef}>
+                        <Title>Crear Apicultor</Title>
+                        
+                        <Label>Nombre del apicultor</Label>
+                        <Input
+                            type='text'
+                            name='nombreApicultor'
+                            placeholder='Ingrese el nombre del apicultor'
+                            value={formDataRegister.nombreApicultor}
+                            onChange={handleChange}
+                            required
+                        />
 
-            <Label htmlFor="confirmPassword" className="label">Confirmar Contraseña</Label>
-            <Input
-              type="password"
-              id="confirmPassword"
-              placeholder="Confirme su contraseña"
-              className="input"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              required
-            />
+                        <Label>Apellido del apicultor</Label>
+                        <Input
+                            type='text'
+                            name='apellidoApicultor'
+                            placeholder='Ingrese el apellido del apicultor'
+                            value={formDataRegister.apellidoApicultor}
+                            onChange={handleChange}
+                            required
+                        />
 
-            <Button type="submit" className="button">
-              Registrarse
-            </Button>
-          </FormRegister>
-        </RegisterContainer>
-      </Main>
+                        <Label>Identificación</Label>
+                        <Input
+                            type='number'
+                            name='identificacion'
+                            placeholder='Ingrese la identificación del apicultor'
+                            value={formDataRegister.identificacion}
+                            onChange={handleChange}
+                            required
+                        />
 
-      <Footer >
-        <h2>Colmenares del Eje</h2>
-        <p>© Todos los derechos reservados</p>
-      </Footer>
-      </Wrapper>
-    </>
-  );
+                        <Label>Teléfono</Label>
+                        <Input
+                            type='number'
+                            name='telefono'
+                            placeholder='Ingrese el número del apicultor'
+                            value={formDataRegister.telefono}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <Label>Correo</Label>
+                        <Input
+                            type='email'
+                            name='correo'
+                            placeholder='Ingrese el correo del apicultor'
+                            value={formDataRegister.correo}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <Label>Fecha de Nacimiento</Label>
+                        <Input
+                            type='date'
+                            name='fechaNacimiento'
+                            value={formDataRegister.fechaNacimiento}
+                            onChange={handleChange}
+                            required
+                        />
+
+<Label>Contraseña</Label>
+                        <PasswordInputWrapper>
+                            <Input
+                                type={showPassword.password ? 'text' : 'password'}
+                                name='password'
+                                placeholder='Ingrese la contraseña del apicultor'
+                                value={formDataRegister.password}
+                                onChange={handleChange}
+                                required
+                            />
+                            <PasswordToggleIcon 
+                                onClick={() => togglePasswordVisibility('password')}
+                            >
+                                {showPassword.password ? (
+                                    <EyeOff size={20} />
+                                ) : (
+                                    <Eye size={20} />
+                                )}
+                            </PasswordToggleIcon>
+                        </PasswordInputWrapper>
+
+                        <Label>Confirmar Contraseña</Label>
+                        <PasswordInputWrapper>
+                            <Input
+                                type={showPassword.confirmPassword ? 'text' : 'password'}
+                                name='confirmPassword'
+                                placeholder='Confirme la contraseña del apicultor'
+                                value={formDataRegister.confirmPassword}
+                                onChange={handleChange}
+                                required
+                            />
+                            <PasswordToggleIcon 
+                                onClick={() => togglePasswordVisibility('confirmPassword')}
+                            >
+                                {showPassword.confirmPassword ? (
+                                    <EyeOff size={20} />
+                                ) : (
+                                    <Eye size={20} />
+                                )}
+                            </PasswordToggleIcon>
+                        </PasswordInputWrapper>
+                        <Label>Contacto de emergencia</Label>
+                            <Input
+                            type='number'
+                            placeholder='Ingrese el contacto de emergencia' 
+                            required
+                            value={formDataRegister.contactoEmergencia}
+                            onChange={handleChange}/>
+                         <Label>Nombre de contacto</Label>
+                        <Input
+                            type='number'
+                            placeholder='Ingrese el nombre del contacto de emergencia' 
+                            required
+                            value={formDataRegister.nombreContactoEmergencia}
+                            onChange={handleChange}/>
+                        <Button type="submit">Crear</Button>
+                    </Form>
+                </FormContainer>
+
+                <Aside>
+                    <h2>Administrador</h2>
+                    <ProfileImage src="src/img/profile-pic.jpeg" alt="Perfil" />
+                    <h3>Daniel Herrera</h3>
+                    <select style={{ fontFamily: "'Poppins', sans-serif" }}>
+                        <option value="">Colmenas Relacionadas</option>
+                    </select>
+                </Aside>
+            </Main>
+
+            <Footer>
+                <h2>Colmenares del Eje</h2>
+                <p>@2025 Todos los derechos reservados</p>
+            </Footer>
+
+            <PopupOverlay $isVisible={showPopup}>
+                <PopupContent $isVisible={showPopup}>
+                    <SuccessIcon />
+                    <PopupTitle>Registro Exitoso</PopupTitle>
+                    <p>El apicultor ha sido registrado exitosamente</p>
+                    <PopupButton onClick={closePopup}>Aceptar</PopupButton>
+                </PopupContent>
+            </PopupOverlay>
+        </Wrapper>
+    );
 }
 
 export default UserRegister;

@@ -1,10 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import imagen1 from 'src/img/abejitas.jpeg';
-import imagen2 from 'src/img/imagen_ejemplo.jpg';
-import imagen3 from 'src/img/images.jpeg';
-
+import imagen1 from 'src/img/apicultor_icon.png';
+import imagen2 from 'src/img/apicultor_icon_3.png';
+import imagen3 from 'src/img/apicultor_icon_2.png';
 
 const breakpoints = {
   mobile: '320px',
@@ -43,7 +42,7 @@ const Header = styled.header`
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   border-radius: 0 0 12px 12px;
   position: fixed;
-  width: 98.8%;
+  width: 100%;
   top: 0;
   z-index: 1000;
 
@@ -123,7 +122,6 @@ const Main = styled.main`
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-
   @media (min-width: ${breakpoints.tablet}) {
     flex: 2;
     margin: 0;
@@ -147,6 +145,7 @@ const Container = styled.div`
     flex-direction: row;
     padding: 20px;
     margin-top: 0;
+    align-items: strecth;
   }
 `;
 
@@ -169,15 +168,15 @@ const Section = styled.section`
 `;
 
 const Img = styled.img`
-  width: 100%;
-  height: 250px;
-  border-radius: 8px;
-  border: 1px solid gray;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
   object-fit: cover;
+  border: 3px solid gray;
 
   @media (min-width: ${breakpoints.tablet}) {
-    width: 300px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
   }
 `;
 
@@ -322,19 +321,19 @@ const Footer = styled.footer`
   }
 `;
 
-function Dashboard() {
+function ViewApicultor() {
   const navigate = useNavigate();
 
-  const colmenas = [
-    { id: "12345", finca: "Finca La Margarita", imagen: imagen1 },
-    { id: "25485", finca: "Finca Los Alpes", imagen: imagen2 },
-    { id: "98712", finca: "Finca La Graciela", imagen: imagen3 },
+  const apicultores = [
+    {id: 12345678, nombre: 'Carlos Parra', imagen: imagen1},
+    {id:99887766, nombre: 'Daniel Delgado', imagen: imagen2},
+    {id: 33445522, nombre: 'Dayana Navia', imagen: imagen3}
   ];
 
   const handleSelectChange = (e) => {
     switch(e.target.value) {
       case 'editar':
-        navigate('/ViewColmena');
+        navigate('/EditUser');
         break;
       case 'monitoreo':
         navigate('/Monitoreo');
@@ -354,39 +353,34 @@ function Dashboard() {
           <Header>
             <Logo src="src/img/Colmenares_del_eje_logo.png" alt="Logo" />
             <NavContainer>
-              <LinkNav to='/HivenRegister'>Crear Colmena</LinkNav>
-              <LinkNav to='/Dashboard'>Visualizar Colmena</LinkNav>
-              <LinkNav to='/ScanQR'>Escanear QR</LinkNav>
+              <LinkNav to='/UserRegister'>Crear Apicultor</LinkNav>
+              <LinkNav to='/ViewApicultor'>Visualizar Apicultor</LinkNav>
+              <LinkNav to='/ScanQR'>Vista Apicultor</LinkNav>
             </NavContainer>
           </Header>
         </HeaderWrapper>
 
         <Container>
           <Main>
-            {colmenas.map((colmena) => (
-              <Section key={colmena.id}>
-                <Img src={colmena.imagen} alt="Imagen de la colmena" />
+            {apicultores.map((apicultor) => (
+              <Section key={apicultor.nombre}>
+                <Img src={apicultor.imagen} alt="Imagen de la colmena" />
                 <DivSection>
-                  <h3>Cod {colmena.id}</h3>
-                  <p>{colmena.finca}</p>
+                  <h3>{apicultor.nombre}</h3>
+                  
                 </DivSection>
                 <Select onChange={handleSelectChange}>
                   <option value="">Seleccionar</option>
                   <option value='editar'>Editar</option>
-                  <option value='recoleccion'>Recolección</option>
-                  <option value='monitoreo'>Monitoreo</option>
                 </Select>
               </Section>
             ))}
           </Main>
 
           <Aside>
-            <h2>Apicultor</h2>
+            <h2>Administrador</h2>
             <ProfileImage src="src/img/profile-pic.jpeg" alt="Perfil" />
-            <h3>Giovanny Molina</h3>
-            <Select>
-              <option value="">Colmenas Relacionadas</option>
-            </Select>
+            <h3>Daniel Herrera</h3>
           </Aside>
         </Container>
       </ContentWrapper>
@@ -399,4 +393,4 @@ function Dashboard() {
   );
 };
 
-export default Dashboard;
+export default ViewApicultor;

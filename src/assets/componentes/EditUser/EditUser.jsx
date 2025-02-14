@@ -12,8 +12,6 @@ const Wrapper = Styled.div`
     padding: 0;
 `;
 
-
-
 const Header = Styled.header`
     display: flex;
     align-items: center;
@@ -25,8 +23,7 @@ const Header = Styled.header`
     position: fixed;
     width: 98.8%;
     top:0;
-    margin: 0;
-    z-index: 1000;
+    margin:0;
 `;
 
 const Logo = Styled.img`
@@ -59,9 +56,9 @@ const LinkNav = Styled(NavLink)`
     &.active {
     transform: scale(1.1);
     font-weight: bold;
-    font-size: 2rem;
+    font-size: 45px;
     background-color :rgb(246, 201, 110);
-    border-radius: 12px; 
+
   }
 `;
 
@@ -84,7 +81,8 @@ const Main = Styled.main`
     gap:2.6rem;
     margin:  auto; // Centra el contenido
     max-width: 1400px; // Limita el ancho máximo para pantallas muy grandes
-    padding-top: calc(170px + 1rem);
+    padding-top: calc(150px + 1rem)
+    
 `;
 
 
@@ -93,13 +91,11 @@ const FormContainer = Styled.div`
     background-color: white;
     border-radius: 10px;
     padding: 1.5rem;
-    flex: 3;
-    min-width: auto;
-    width: 100%;
-    max-width: 950px;
+    flex: 3; // Esto hará que tome 3 partes del espacio disponible
+    min-width: 600px; // Ancho mínimo para el formulario
     border: 1px solid grey;
-    margin: 0;
-    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+    margin-left: 3.9rem;
+    box-shadow:  0 0 20px 5px rgba(0, 0, 0, 0.25);
     
 `;
 
@@ -143,15 +139,6 @@ const Select = Styled.select`
     font-family: 'Poppins', sans-serif;
 `;
 
-
-const ButtonContainer = Styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-`;
-
-
 const Button = Styled.button`
     background-color: #f9d77e;
     border: none;
@@ -161,7 +148,6 @@ const Button = Styled.button`
     font-size: 1rem;
     font-weight: 600;
     color: #4e342e;
-    width: 150px;
     transition: background-color 0.3s;
     &:hover {
         background-color: #f8c150;
@@ -169,10 +155,10 @@ const Button = Styled.button`
 `;
 
 const Aside = Styled.aside`
-    width: 450px;
+    width: 350px;
     flex: 1;
-    min-width: 400px;
-    max-width: 500px;
+    min-width: 300px; // Ancho mínimo para el aside
+    max-width: 400px; // Ancho máximo para el aside
     background-color: white;
     border-radius: 10px;
     padding: 20px;
@@ -182,8 +168,8 @@ const Aside = Styled.aside`
     align-items: center;
     gap: 15px;
     border: 1px solid gray;
-    font-size: 1.6rem;
-    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+    font-size:1.6rem;
+    box-shadow:  0 0 20px 5px rgba(0, 0, 0, 0.25);
 `;
 
 
@@ -196,13 +182,20 @@ const ProfileImage = Styled.img`
         border: 1px solid grey;
 `;
 
+
+const ButtonContainer = Styled.div`
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+`;
+
 const Footer = Styled.footer`
     background-color: #f9d77e;
     color: #4e342e;;
     text-align: center;
     padding: 0.2rem;
     font-size: 0.76rem;
-    border-radius:12px 12px 0 0;
+    border-radius:12px;
 `;
 
 //PopUp
@@ -271,17 +264,20 @@ const PopupButton = Styled.button`
 `;
 
 
-function ViewColmena() {
+function    EditUser() {
     //Estado del PopUp
     const [showPopup, setShowPopup] = useState(false);
 
-    const [formData, setFormData] = useState({
-         cantidadCriasAbierta : '',
-         cantidadCriasOperculada : '',
-         presenciaReina : '',
-         colorReina : '',
-         origenReina: '',
-         reportesGenerales: '' })
+    const [formDataUser, setFormDataUser] = useState({
+         nombreApicultor : '',
+         apellditoApicultor: '',
+         telefono: '',
+         correo : '',
+         nombreContactoEmergencia: '',
+         contactoEmergencia: '',
+         fechaNacimiento: ''
+
+      })
  
      const handleChange = (e) => {
          const { name, value } = e.target;
@@ -307,97 +303,91 @@ function ViewColmena() {
          <Header>
                 <Logo src="src/img/Colmenares_del_eje_logo.png" alt="Logo" />
                 <NavContainer>
-                    <LinkNav to='/HivenRegister'>
-                          Crear Colmena
+                    <LinkNav to='/UserRegister'>
+                          Crear Apicultor
                     </LinkNav>
-                    <LinkNav to='/ViewColmena'>Visualizar Colmena</LinkNav>
-                    <LinkNav to='/ScanQR'>Escanear QR</LinkNav>
+                    <LinkNav to='/EditUser'>Editar Apicultor</LinkNav>
+                    <LinkNav to='/ScanQR'>Vista Apicultor</LinkNav>
                 </NavContainer>
             </Header>
         <Main>
             <FormContainer>
             <Form onSubmit={handleSubmit}>
-                <Title>Editar Colmena</Title>
+                <Title>Editar Apicultor</Title>
                 
-                <Label>Cantidad de Cuadros de Cria Abierta</Label>
-                <Input
-                    type='number'
-                    name='cuadrosCriaAbierta'
-                    placeholder='Ingrese el número de cuadros'
-                    value={formData.cuadrosCriaAbierta}
-                    onChange={handleChange}
-                    required
-                />
-                
-                <Label>Cantidad de Cuadros de Cria Operculada</Label>
-                <Input
-                    type='number'
-                    name='cuadrosCriaOperculada'
-                    placeholder='Ingrese el número de cuadros'
-                    value={formData.cuadrosCriaOperculada}
-                    onChange={handleChange}
-                    required
-                />
-                
-                <Label>Presencia de la Reina</Label>
-                <Select
-                    name='presenciaReina'
-                    value={formData.presenciaReina}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Seleccione una opción</option>
-                    <option value="Si">Sí</option>
-                    <option value="No">No</option>
-                </Select>
-                
-                <Label>Color de Reina</Label>
-                <Select
-                    name='colorReina'
-                    value={formData.colorReina}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Seleccione una opción</option>
-                    <option value="Blanca">Blanca</option>
-                    <option value="Amarilla">Amarilla</option>
-                    <option value="Roja">Roja</option>
-                    <option value="Verde">Verde</option>
-                    <option value="Azul">Azul</option>
-                </Select>
-                
-                <Label>Origen de la Reina</Label>
-                <Select
-                    name='origenReina'
-                    value={formData.origenReina}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Seleccione una opción</option>
-                    <option value="Africanita">Africanita</option>
-                    <option value="Europea">Europea</option>
-                    <option value="Asiatica">Asiática</option>
-                </Select>
-                
-                <Label>Observaciones Generales</Label>
+                <Label>Ingrese los nombres del apicultor</Label>
                 <Input
                     type='text'
-                    name='observaciones'
-                    placeholder='Ingrese las observaciones generales'
-                    value={formData.observaciones}
+                    name='nombreApicultor'
+                    placeholder='Ingrese el nombre del apicultor'
+                    value={formDataUser.nombreApicultor}
                     onChange={handleChange}
                     required
                 />
+
+                <Label>Ingrese los apellidos del apicultor</Label>
+                <Input
+                    type='text'
+                    name='nombreApicultor'
+                    placeholder='Ingrese los apellidos del apicultor'
+                    value={formDataUser.apellditoApicultor}
+                    onChange={handleChange}
+                    required
+                />
+                <Label>Identificacion</Label>
+                <Input
+                type='number'
+                placeholder='Ingrese la identificacion del apicultor'/>
+
+                <Label>Telefono </Label>
+                <Input
+                    type='number'
+                    name='telefono'
+                    placeholder='Ingrese el número del apicultor'
+                    value={formDataUser.cuadrosCriaOperculada}
+                    onChange={handleChange}
+                    required
+                />
+                
+                <Label>Correo</Label>
+               <Input
+               type='email'
+               placeholder='Ingrese el correo del apicultor'
+               value={formDataUser.correo}
+               onChange={handleChange}/>
+                
+               
+                
+                <Label>Fecha de Nacimiento</Label>
+                <Input 
+                type='date'
+                placeholder='Ingrese la fecha de nacimiento del apicultor'
+                value={formDataUser.fechaNacimiento}
+                />
+
+                <Label>Contacto de emergencia</Label>
+                <Input
+                type='number'
+                placeholder='Ingrese el contacto e emergencia'
+                value={formDataUser.contactoEmergencia}/>
+
+                <Label>Nombre de contacto</Label>
+                <Input
+                type='text'
+                placeholder='Ingrese el nombre del contacto e emergencia'
+                value={formDataUser.contactoEmergencia}/>
+                <br></br>
                 <ButtonContainer>
-                <Button type="submit">Actualizar</Button>
-                </ButtonContainer>
+                <Button type="submit">Editar</Button>
+                <Button>Deshabilitar</Button>
+</ButtonContainer>
             </Form>
             </FormContainer>
 
                 <Aside>
-                            <h2>Apicultor</h2>
+                            <h2>Administrador</h2>
                             <ProfileImage src="src/img/profile-pic.jpeg" alt="Perfil" />
-                            <h3>Giovanny Molina</h3>
+                            <h3>Daniel Herrera</h3>
                             <select style={{ fontFamily: "'Poppins', sans-serif" }}>
                                 <option value="">Colmenas Relacionadas</option>
                             </select>
@@ -410,8 +400,8 @@ function ViewColmena() {
             <p>@2025 Todos los derechos reservados</p>
         </Footer>
 
-        <PopupOverlay isVisible={showPopup}>
-                <PopupContent isVisible={showPopup}>
+        <PopupOverlay $isVisible={showPopup}>
+                <PopupContent $isVisible={showPopup}>
                     <SuccessIcon />
                     <PopupTitle>Actualización Exitosa </PopupTitle>
                     <p>La colmena ha sido actualizada exitosamente</p>
@@ -422,4 +412,4 @@ function ViewColmena() {
     )
 }
 
-export default ViewColmena;
+export default  EditUser;
