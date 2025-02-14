@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import imagen1 from 'src/img/abejitas.jpeg';
 import imagen2 from 'src/img/imagen_ejemplo.jpg';
 import imagen3 from 'src/img/images.jpeg';
+import { useState } from 'react';
 
 
 const breakpoints = {
@@ -322,16 +323,154 @@ const Footer = styled.footer`
   }
 `;
 
+//PopUp Styles
+const PopupOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: ${props => props.isVisible ? 1 : 0};
+  visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
+  transition: opacity 0.2s, visibility 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const PopupContent = styled.div`
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+    transform: ${props => props.isVisible ? 'scale(1)' : 'scale(0.1)'};
+    transition: transform 0.4s ease-in-out;
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+    @media (max-width: ${breakpoints.mobile}) {
+        padding: 1.5rem;
+    }
+`;
+
+
+const CloseIcon = styled.button`
+    width: 30px;
+    height: 30px;
+    background: #f9d77e;
+    border-radius: 100%;
+    position: absolute;
+    left: 88%;
+    bottom: 90%;
+    border: none;
+    &::after {
+        content: 'X';
+        font-size: 20px;
+        color: white;
+    }
+
+    @media (max-width: ${breakpoints.mobile}) {
+        width: 60px;
+        height: 60px;
+        margin: -30px auto 15px;
+        
+        &::after {
+            font-size: 30px;
+        }
+    }
+`;
+
+
+const PopupTitle = styled.h2`
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+
+    @media (max-width: ${breakpoints.mobile}) {
+        font-size: 20px;
+    }
+`;
+
+const PopupButton = styled.button`
+    background: #f9d77e;
+    color: black;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin: 15px;
+    &:hover {
+        background: #f8c150;
+    }
+
+    @media (max-width: ${breakpoints.mobile}) {
+        font-size: 14px;
+        padding: 8px 24px;
+    }
+`;
+
+
+
 function Dashboard() {
   const navigate = useNavigate();
+  const [selectedColmenaId, setSelectedColmenaId] = useState(null);
 
-  const colmenas = [
-    { id: "12345", finca: "Finca La Margarita", imagen: imagen1 },
-    { id: "25485", finca: "Finca Los Alpes", imagen: imagen2 },
-    { id: "98712", finca: "Finca La Graciela", imagen: imagen3 },
+
+
+  const [showPopup, setShowPopup] = useState(false);
+
+  const colmenasIniciales = [
+    { id: 12345, finca: "Finca La Margarita", imagen: imagen1 },
+    { id: 25485, finca: "Finca Los Alpes", imagen: imagen2 },
+    { id: 98712, finca: "Finca La Graciela", imagen: imagen3 },
   ];
 
-  const handleSelectChange = (e) => {
+  const colmenasCompletas= [
+    {
+      cod: 12345,
+      cantidadCriasAbierta : 24,
+      cantidadCriasOperculada : 54,
+      presenciaReina : 'Si',
+      colorReina : 'Amarilla',
+      origenReina: 'Europea',
+      reportesGenerales: 'Sin novedad' 
+    },
+
+    {
+      cod: 25485,
+      cantidadCriasAbierta : 34,
+      cantidadCriasOperculada : 45,
+      presenciaReina : 'Si',
+      colorReina : 'Amarilla',
+      origenReina: 'Africanita',
+      reportesGenerales: 'Sin novedad' 
+    },
+    {
+      cod: 98712,
+      cantidadCriasAbierta: 25,
+      cantidadCriasOperculada: 43,
+      colorReina: 'Negra',
+      origenReina : 'Europea',
+      reportesGenerales: 'Sin novedad'
+    }
+  ]
+
+  //Obtener todas las colmenas guardadas en el localStorage
+  const colmenasGuardadas = JSON.parse(localStorage.getItem('colmenas')) || [];
+
+  //Combinar ambas arrays
+  
+  const colmenasTotales = [...colmenasIniciales, ...colmenasGuardadas];
+
+  
+
+  const handleSelectChange = (e, colmenaId) => {
     switch(e.target.value) {
       case 'editar':
         navigate('/ViewColmena');
@@ -342,11 +481,24 @@ function Dashboard() {
       case 'recoleccion':
         navigate('/Recoleccion');
         break;
-      default:
-        break;
+        case 'visualizar-detalles':
+          setSelectedColmenaId(null); // Primero resetea
+          setTimeout(() => {
+            setSelectedColmenaId(colmenaId);
+            setShowPopup(true);
+          }, 10);
+          break;
     }
   };
 
+
+  const closePopup = () => {
+    setShowPopup(false);
+
+    setTimeout(() => {
+      setSelectedColmenaId(null);
+    }, 400)
+}
   return (
     <PageWrapper>
       <ContentWrapper>
@@ -363,18 +515,23 @@ function Dashboard() {
 
         <Container>
           <Main>
-            {colmenas.map((colmena) => (
+            {colmenasTotales.map((colmena) => (
               <Section key={colmena.id}>
                 <Img src={colmena.imagen} alt="Imagen de la colmena" />
                 <DivSection>
-                  <h3>Cod {colmena.id}</h3>
-                  <p>{colmena.finca}</p>
-                </DivSection>
-                <Select onChange={handleSelectChange}>
+              <h3>Cod {colmena.id}</h3>
+              {colmena.finca && <p>{colmena.finca}</p>}
+              {colmena.presenciaReina && (
+                <p>Presencia de la Reina: {colmena.presenciaReina} -Color de la reina: {colmena.colorReina} </p> 
+
+              )}
+            </DivSection>
+            <Select onChange={(e) => handleSelectChange(e, colmena.id)}>
                   <option value="">Seleccionar</option>
                   <option value='editar'>Editar</option>
                   <option value='recoleccion'>Recolección</option>
                   <option value='monitoreo'>Monitoreo</option>
+                  <option value="visualizar-detalles">Visualizar Detalles</option>
                 </Select>
               </Section>
             ))}
@@ -395,6 +552,36 @@ function Dashboard() {
         <h2>Colmenares del Eje</h2>
         <p>@2025 Todos los derechos reservados</p>
       </Footer>
+
+      <PopupOverlay isVisible={showPopup}>
+        <PopupContent isVisible={showPopup}>
+          <CloseIcon onClick={closePopup}></CloseIcon>
+          <Logo src="src/img/Colmenares_del_eje_logo.png" alt="Logo" />
+          {selectedColmenaId && (
+            (() => {
+              const selectedColmena = colmenasCompletas.find(c => c.cod === selectedColmenaId);
+              if (selectedColmena) {
+                return (
+                  <div>
+                    <PopupTitle>Información de la colmena</PopupTitle>
+                    <p>Número de cuadros de cría abierta: {selectedColmena.cantidadCriasAbierta}</p>
+                    <p>Número de cuadros de cría operculada: {selectedColmena.cantidadCriasOperculada}</p>
+                    <p>Presencia de la reina: {selectedColmena.presenciaReina || 'No especificado'}</p>
+                    <p>Color de la reina: {selectedColmena.colorReina}</p>
+                    <p>Origen de la reina: {selectedColmena.origenReina}</p>
+                    <p>Reportes Generales: {selectedColmena.reportesGenerales}</p>
+                  </div>
+                );
+              } else {
+                return <p>No se encontró información detallada para esta colmena.</p>;
+              }
+            })()
+          )}
+          <PopupButton>Deshabilitar</PopupButton>
+          <PopupButton>Editar</PopupButton>
+        </PopupContent>
+</PopupOverlay>
+       
     </PageWrapper>
   );
 };
