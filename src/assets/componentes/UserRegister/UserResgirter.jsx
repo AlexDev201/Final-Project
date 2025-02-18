@@ -52,11 +52,10 @@ const LinkNav = Styled(NavLink)`
     }
 
     &.active {
-        transform: scale(1.1);
+        transform: scale(1.05);
         font-weight: bold;
-        font-size: 45px;
         background-color :rgb(246, 201, 110);
-
+        border-radius: 12px;
     }
 `;
 
@@ -263,20 +262,25 @@ const PasswordToggleIcon = Styled.div`
 function UserRegister() {
     //Variable para el reseteo del formulario
     const formRef = useRef(null);
+    const TodayDate = new Date();
+    const assignedDate = TodayDate.toISOString().split('T')[0];
 
     const [showPopup, setShowPopup] = useState(false);
 
     //Guadamos la informacion del formulario
     const [formDataRegister, setFormDataRegister] = useState({
+        username: '',
         nombreApicultor: '',
         apellidoApicultor: '',
         identificacion: '',
-        telefono: '',
-        correo: '',
-        contactoEmergencia: '',
-        fechaNacimiento: '',
         password: '',
-        confirmPassword: ''
+        correo: '',
+        telefono: '',
+        fechaNacimiento: '',
+        estado: '',
+        nombreContactoEmergencia: '',
+        contactoEmergencia: '',
+        rol: ''
     });
 
    
@@ -303,35 +307,80 @@ function UserRegister() {
         }));
     };
 
-    const handleSubmit = (e) => {
+ 
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-        formRef.current.reset();
-        
-       
-
         
 
+        // Validar que las contraseñas coincidan
+        // if (formDataRegister.password !== formDataRegister.confirmPassword) {
+        //     alert("Las contraseñas no coinciden");
+        //     return;
+        //  }
+         // Crear el objeto de datos que espera el backend
+        const userData = {
+            username: formDataRegister.username,
+            first_name: formDataRegister.nombreApicultor,
+            last_name: formDataRegister.apellidoApicultor,
+            identifications: formDataRegister.identificacion,
+            password: formDataRegister.password,
+            email: formDataRegister.correo,
+            phone: formDataRegister.telefono,
+            assignment_date: assignedDate,
+            birth_date: formDataRegister.fechaNacimiento,
+            state: formDataRegister.estado,
+            emergency_contact_name: formDataRegister.nombreContactoEmergencia,
+            emergency_contact_phone: formDataRegister.contactoEmergencia,
+            role: formDataRegister.rol
+        };
+
+        alert(JSON.stringify(userData));
+
+      
+        
+       //Conexion al backend
+
+       try {
+        const response = await fetch('http://127.0.0.1:8000/users/sign_up/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.Error || 'Error en el registro');
+            console.log(Error);
+        }
+
+        const data = await response.json();
+        
+        // Si el registro es exitoso
+        setShowPopup(true);
+        //Limpiar el formulario
         setFormDataRegister({
+            username: '',
             nombreApicultor: '',
             apellidoApicultor: '',
             identificacion: '',
-            telefono: '',
+            password: '',
             correo: '',
-            nombreContactoEmergencia: '',
-            contactoEmergencia: '',
+            telefono: '',
             fechaNacimiento: '',
-            password : '',
-            confirmPassword : ''
+            estado: '',
+            contactoEmergencia: '',
+            nombreContactoEmergencia: '',
+            rol: ''
         });
 
-
-        // Mostrar popup de éxito
-        setShowPopup(true);
-
-    };
-    
-
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+};
+        
     const closePopup = () => {
         setShowPopup(false);
     };
@@ -350,6 +399,16 @@ function UserRegister() {
                 <FormContainer>
                     <Form onSubmit={handleSubmit} ref={formRef}>
                         <Title>Crear Apicultor</Title>
+
+                        <Label>Username</Label>
+                        <Input
+                            type='text'
+                            name='username'
+                            placeholder='Ingrese el username del apicultor'
+                            value={formDataRegister.username}
+                            onChange={handleChange}
+                            required
+                        />
                         
                         <Label>Nombre del apicultor</Label>
                         <Input
@@ -381,36 +440,7 @@ function UserRegister() {
                             required
                         />
 
-                        <Label>Teléfono</Label>
-                        <Input
-                            type='number'
-                            name='telefono'
-                            placeholder='Ingrese el número del apicultor'
-                            value={formDataRegister.telefono}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <Label>Correo</Label>
-                        <Input
-                            type='email'
-                            name='correo'
-                            placeholder='Ingrese el correo del apicultor'
-                            value={formDataRegister.correo}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <Label>Fecha de Nacimiento</Label>
-                        <Input
-                            type='date'
-                            name='fechaNacimiento'
-                            value={formDataRegister.fechaNacimiento}
-                            onChange={handleChange}
-                            required
-                        />
-
-<Label>Contraseña</Label>
+                        <Label>Contraseña</Label>
                         <PasswordInputWrapper>
                             <Input
                                 type={showPassword.password ? 'text' : 'password'}
@@ -431,40 +461,78 @@ function UserRegister() {
                             </PasswordToggleIcon>
                         </PasswordInputWrapper>
 
-                        <Label>Confirmar Contraseña</Label>
-                        <PasswordInputWrapper>
-                            <Input
-                                type={showPassword.confirmPassword ? 'text' : 'password'}
-                                name='confirmPassword'
-                                placeholder='Confirme la contraseña del apicultor'
-                                value={formDataRegister.confirmPassword}
-                                onChange={handleChange}
-                                required
-                            />
-                            <PasswordToggleIcon 
-                                onClick={() => togglePasswordVisibility('confirmPassword')}
-                            >
-                                {showPassword.confirmPassword ? (
-                                    <EyeOff size={20} />
-                                ) : (
-                                    <Eye size={20} />
-                                )}
-                            </PasswordToggleIcon>
-                        </PasswordInputWrapper>
+
+                        <Label>Correo</Label>
+                        <Input
+                            type='email'
+                            name='correo'
+                            placeholder='Ingrese el correo del apicultor'
+                            value={formDataRegister.correo}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <Label>Teléfono</Label>
+                        <Input
+                            type='number'
+                            name='telefono'
+                            placeholder='Ingrese el número del apicultor'
+                            value={formDataRegister.telefono}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <Label>Fecha de Nacimiento</Label>
+                        <Input
+                            type='date'
+                            name='fechaNacimiento'
+                            value={formDataRegister.fechaNacimiento}
+                            onChange={handleChange}
+                            required
+                        />
+                        <Label>Estado</Label>
+                        <Select
+                            name='estado'
+                            value={formDataRegister.estado}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Seleccione un estado</option> {/* Opción vacía */}
+                            <option value="Active">Activo</option>
+                            {/* <option value="Deactivate">Desactivo</option> */}
+                        </Select>
+
+                        <Label>Nombre de contacto de emergencia</Label>
+                        <Input
+                            type='text'
+                            placeholder='Ingrese el nombre del contacto de emergencia' 
+                            name='nombreContactoEmergencia'
+                            required
+                            value={formDataRegister.nombreContactoEmergencia}
+                            onChange={handleChange}/>
+
                         <Label>Contacto de emergencia</Label>
                             <Input
-                            type='number'
+                            type='tel'
+                            name= 'contactoEmergencia'
                             placeholder='Ingrese el contacto de emergencia' 
                             required
                             value={formDataRegister.contactoEmergencia}
                             onChange={handleChange}/>
-                         <Label>Nombre de contacto</Label>
-                        <Input
-                            type='number'
-                            placeholder='Ingrese el nombre del contacto de emergencia' 
-                            required
-                            value={formDataRegister.nombreContactoEmergencia}
-                            onChange={handleChange}/>
+
+                            
+
+                        <Label>Rol</Label>
+                        <Select
+                        name='rol'
+                        value={formDataRegister.rol}
+                        onChange={handleChange}
+                        required
+                    >
+                        {/* <option value="admin">Administrador</option> */}
+                        <option value="">Seleccione un rol</option> {/* Opción vacía */}
+                        <option value="beekeeper">Apicultor</option>
+                    </Select>
                         <Button type="submit">Crear</Button>
                     </Form>
                 </FormContainer>
@@ -495,5 +563,4 @@ function UserRegister() {
         </Wrapper>
     );
 }
-
 export default UserRegister;

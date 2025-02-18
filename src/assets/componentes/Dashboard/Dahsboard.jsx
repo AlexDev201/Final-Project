@@ -419,10 +419,9 @@ const PopupButton = styled.button`
 
 function Dashboard() {
   const navigate = useNavigate();
+  //Estado para la seleccion de Id en las colmenas
   const [selectedColmenaId, setSelectedColmenaId] = useState(null);
-
-
-
+  //Estado para la apertura del PopUp con la informacion del apicultor
   const [showPopup, setShowPopup] = useState(false);
 
   const colmenasIniciales = [
@@ -521,10 +520,6 @@ function Dashboard() {
                 <DivSection>
               <h3>Cod {colmena.id}</h3>
               {colmena.finca && <p>{colmena.finca}</p>}
-              {colmena.presenciaReina && (
-                <p>Presencia de la Reina: {colmena.presenciaReina} -Color de la reina: {colmena.colorReina} </p> 
-
-              )}
             </DivSection>
             <Select onChange={(e) => handleSelectChange(e, colmena.id)}>
                   <option value="">Seleccionar</option>

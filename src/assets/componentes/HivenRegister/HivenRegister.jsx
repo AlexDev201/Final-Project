@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
 // Sistema de breakpoints
 const breakpoints = {
-  mobile: '480px',
-  tablet: '768px',
-  laptop: '1024px'
+    mobile: '480px',
+    tablet: '768px',
+    laptop: '1024px'
 };
 
 const Wrapper = Styled.div`
@@ -31,8 +31,7 @@ const Header = Styled.header`
         flex-direction: column;
         padding: 0.5rem;
         height: auto;
-        width:100%;
-        width: 98.8%;
+        width: 100%;
     }
 `;
 
@@ -52,14 +51,12 @@ const NavContainer = Styled.nav`
     flex-grow: 1;
     padding: 5px;
 
-        @media (max-width: ${breakpoints.tablet}) {
+    @media (max-width: ${breakpoints.tablet}) {
         flex-direction: column;
-        gap: 0.3rem; // Reducimos el gap entre elementos
+        gap: 0.3rem;
         align-items: center;
         width: 100%;
-        padding: 0.3rem 0; // Reducimos el padding vertical
-    }
-
+        padding: 0.3rem 0;
     }
 `;
 
@@ -96,48 +93,58 @@ const LinkNav = Styled(NavLink)`
         border-radius: 12px;
 
         @media (max-width: ${breakpoints.tablet}) {
-        font-size: 1.2rem;
-        padding: 8px;
-        text-align: center;
-         width: 98.8%;
-    }
+            font-size: 1.2rem;
+            padding: 8px;
+            text-align: center;
+            width: 98.8%;
+        }
 
-    @media (max-width: ${breakpoints.mobile}) {
-        font-size: 1.1rem;
-        padding: 6px;
-    }|
+        @media (max-width: ${breakpoints.mobile}) {
+            font-size: 1.1rem;
+            padding: 6px;
+        }
     }
 `;
 
 const Main = Styled.main`
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     flex: 1;
     background: radial-gradient(circle, white, white);
     padding: 1rem;
-    gap: 2.6rem;
+    gap: 2rem;
     margin: auto;
-    max-width: 1400px;
-    padding-top: calc(170px + 1rem);
+    max-width: 1000px;
+    padding-top: calc(120px + 1rem);
+    flex-wrap: wrap;
 
-  
     @media (max-width: ${breakpoints.laptop}) {
         flex-direction: column;
         align-items: center;
         padding: 1rem;
         gap: 1.5rem;
         max-width: 95%;
-        padding-top: calc(180px + 1rem); // Aumentamos el padding-top para móvil
+        padding-top: calc(150px + 1rem);
     }
+`;
 
+const FormContainer = Styled.div`
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    width: 450px;
+    min-height: 600px;
+    height: auto;
+    border: 1px solid grey;
+    margin: 0;
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    
     @media (max-width: ${breakpoints.tablet}) {
-        padding-top: calc(180px + 1rem); // Aumentamos el padding-top para móvil
-    }
-
-    @media (max-width: ${breakpoints.mobile}) {
-        padding-top: calc(200px + 1rem); // Ajustamos aún más para pantallas muy pequeñas
-    }
-        
+        width: 95%;
+        max-width: 450px;
+        margin-top: calc(100px + 1rem);
     }
 `;
 
@@ -151,30 +158,6 @@ const Title = Styled.h1`
     @media (max-width: ${breakpoints.mobile}) {
         font-size: 1.5rem;
         margin-bottom: 1rem;
-    }
-`;
-
-const FormContainer = Styled.div`
-    background-color: white;
-    border-radius: 10px;
-    padding: 1.5rem;
-    flex: 3;
-    min-width: auto;
-    width: 100%;
-    max-width: 950px;
-    border: 1px solid grey;
-    margin: 0;
-    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
-
-    @media (max-width: ${breakpoints.tablet}) {
-        padding: 1rem;
-        max-width: 95%;
-        margin-top: calc(100px + 1rem);
-    }
-    
-    @media (max-width: ${breakpoints.laptop}){
-    padding: 1.4rem;
-    margin-top: calc(70px + 1rem);
     }
 `;
 
@@ -237,7 +220,6 @@ const ButtonContainer = Styled.div`
     align-items: center;
 `;
 
-
 const Button = Styled.button`
     background-color: #f9d77e;
     border: none;
@@ -263,12 +245,11 @@ const Button = Styled.button`
 
 const Aside = Styled.aside`
     width: 450px;
-    flex: 1;
-    min-width: 400px;
-    max-width: 500px;
+    min-height: 600px;
+    height: auto;
     background-color: white;
     border-radius: 10px;
-    padding: 20px;
+    padding: 1.5rem;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -279,21 +260,14 @@ const Aside = Styled.aside`
     box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
 
     @media (max-width: ${breakpoints.laptop}) {
-        width: 100%;
-        max-width: 800px;
-        margin: 0 1rem;
+        width: 95%;
+        max-width: 450px;
+        margin: 0 auto;
     }
 
     @media (max-width: ${breakpoints.mobile}) {
         font-size: 1.2rem;
-        padding: 15px;
-        min-width: auto;
-    }
-
-    h2, h3 {
-        @media (max-width: ${breakpoints.mobile}) {
-            font-size: 1.2rem;
-        }
+        padding: 1.5rem;
     }
 `;
 
@@ -414,52 +388,187 @@ const PopupButton = Styled.button`
     }
 `;
 
-
-
-
-function HivenRegister() {
-
-    const [showPopup, setShowPopup] = useState(false);
-
-
-   
-    const [formData, setFormData] = useState({
-        cantidadCriasAbierta : '',
-        cantidadCriasOperculada : '',
-        presenciaReina : '',
-        colorReina : '',
-        origenReina: '',
-        reportesGenerales: '' })
-
-
-        const [errors, setErrors] = useState({
-            cantidadCriasAbierta: '',
-            cantidadCriasOperculada: '',
-            presenciaReina: '',
-            colorReina: '',
-            origenReina: '',
-            reportesGenerales: ''
-        });
+const ClimaInfo = Styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
     
-        const preventLetters = (e) => {
-            if (!/[\d.]/.test(e.key) && 
-                e.key !== 'Backspace' && 
-                e.key !== 'Delete' && 
-                e.key !== 'ArrowLeft' && 
-                e.key !== 'ArrowRight') {
-                e.preventDefault();
+    h3 {
+        grid-column: 1 / -1;
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+    
+    .clima-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0.5rem;
+        background-color: #f8f8f8;
+        border-radius: 8px;
+        
+        .label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.2rem;
+        }
+        
+        .value {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+    }
+        
+    .ubicacion-container {
+        grid-column: 1 / -1;
+        display: grid;  // Cambiado a grid
+        grid-template-columns: repeat(2, 1fr);  // Dos columnas como los items de clima
+        gap: 1rem;
+        margin-top: 0.5rem;
+        
+        .ubicacion-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f8f8f8;
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            
+            .label {
+                font-size: 0.9rem;
+                color: #666;
+                margin-bottom: 0.2rem;
             }
             
-            if (e.key === '.' && e.target.value.includes('.')) {
-                e.preventDefault();
+            .value {
+                font-size: 1.1rem;
+                font-weight: 500;
             }
-        };
+        }
+    }
 
+    @media (max-width: ${breakpoints.mobile}) {
+        grid-template-columns: 1fr;
+        
+        .ubicacion-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
+
+`;
+
+function HivenRegister() {
+    const [showPopup, setShowPopup] = useState(false);
+    const [ubicacion, setUbicacion] = useState(null);
+    const [clima, setClima] = useState(null);
+    const [cargando, setCargando] = useState(false);
+    const [error, setError] = useState(null);
+
+    const [formData, setFormData] = useState({
+        cantidadCriasAbierta: '',
+        cantidadCriasOperculada: '',
+        presenciaReina: '',
+        colorReina: '',
+        origenReina: '',
+        reportesGenerales: '',
+        // Datos de APIs
+        latitud: '',
+        longitud: '',
+        temperatura_c: '',
+        temperatura_f: '',
+        clima_texto: '',
+        viento_kph: '',
+        presion_mb: '',
+        humedad: ''
+    });
+
+    const [errors, setErrors] = useState({
+        cantidadCriasAbierta: '',
+        cantidadCriasOperculada: '',
+        presenciaReina: '',
+        colorReina: '',
+        origenReina: '',
+        reportesGenerales: ''
+    });
+
+    useEffect(() => {
+        obtenerUbicacionYClima();
+    }, []);
+
+    const obtenerUbicacionYClima = async () => {
+        if ("geolocation" in navigator) {
+            setCargando(true);
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                });
+
+                const { latitude, longitude } = position.coords;
+                setUbicacion({ latitude, longitude });
+
+                const respuestaClima = await fetch(
+                    `http://api.weatherapi.com/v1/current.json?key=ca61bc45a6824e02a51185714251302&q=${latitude},${longitude}&lang=es`
+                );
+                
+                if (!respuestaClima.ok) {
+                    throw new Error('Error al obtener datos del clima');
+                }
+
+                const datosClima = await respuestaClima.json();
+                const current = datosClima.current;
+
+                setClima({
+                    temperatura_c: current.temp_c,
+                    temperatura_f: current.temp_f,
+                    clima_texto: current.condition.text,
+                    viento_kph: current.wind_kph,
+                    presion_mb: current.pressure_mb,
+                    humedad: current.humidity
+                });
+
+                // Actualizar formData con datos de ubicación y clima
+                setFormData(prev => ({
+                    ...prev,
+                    latitud: latitude,
+                    longitud: longitude,
+                    temperatura_c: current.temp_c,
+                    temperatura_f: current.temp_f,
+                    clima_texto: current.condition.text,
+                    viento_kph: current.wind_kph,
+                    presion_mb: current.pressure_mb,
+                    humedad: current.humidity
+                }));
+
+            } catch (error) {
+                setError('Error al obtener la ubicación o datos del clima');
+                console.error('Error:', error);
+            } finally {
+                setCargando(false);
+            }
+        }
+    };
+
+    const preventLetters = (e) => {
+        if (!/[\d.]/.test(e.key) && 
+            e.key !== 'Backspace' && 
+            e.key !== 'Delete' && 
+            e.key !== 'ArrowLeft' && 
+            e.key !== 'ArrowRight') {
+            e.preventDefault();
+        }
+        
+        if (e.key === '.' && e.target.value.includes('.')) {
+            e.preventDefault();
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // Validación específica para campos numéricos
         if (name === 'cantidadCriasAbierta' || name === 'cantidadCriasOperculada') {
             if (value === '' || /^\d*\.?\d*$/.test(value)) {
                 setFormData(prev => ({
@@ -468,13 +577,11 @@ function HivenRegister() {
                 }));
             }
         } else {
-            // Para todos los demás campos
             setFormData(prev => ({
                 ...prev,
                 [name]: value
             }));
         }
-
 
         if (errors[name]) {
             setErrors(prev => ({
@@ -484,57 +591,57 @@ function HivenRegister() {
         }
     };
 
-        
-
-      const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Datos del formulario:', formData);
-
-        // Crear objeto con la información relevante que quieres mostrar
-        const nuevaColmena = {
-            id: Date.now().toString(), // Genera un ID único
-            presenciaReina: formData.presenciaReina,
-            colorReina: formData.colorReina,
-            // Añade otros campos que quieras mostrar
-        };
-
-        // Obtener colmenas existentes
-        const colmenasGuardadas = JSON.parse(localStorage.getItem('colmenas')) || [];
         
-        // Añadir nueva colmena
-        const nuevasColmenas = [...colmenasGuardadas, nuevaColmena];
-        
-        // Guardar en localStorage
-        localStorage.setItem('colmenas', JSON.stringify(nuevasColmenas));
-        
-        
-        //Mostramos el PopUp
-        setShowPopup(true);
+        try {
+            // Enviar todos los datos al backend
+            const response = await fetch('TU_URL_BACKEND/api/colmenas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
 
-        //Limpiamos el formulario
-        setFormData({
-            cantidadCriasAbierta: '',
-            cantidadCriasOperculada: '',
-            colorReina: '',
-            origenReina: '',
-            reportesGenerales: ''
-        });
+            if (!response.ok) {
+                throw new Error('Error al guardar los datos');
+            }
 
-      }
-    
+            // Guardar en localStorage
+            const nuevaColmena = {
+                id: Date.now().toString(),
+                ...formData
+            };
 
-    const closePopup = () => {
-        setShowPopup(false);
-    }
+            const colmenasGuardadas = JSON.parse(localStorage.getItem('colmenas')) || [];
+            const nuevasColmenas = [...colmenasGuardadas, nuevaColmena];
+            localStorage.setItem('colmenas', JSON.stringify(nuevasColmenas));
+            
+            setShowPopup(true);
+
+            // Limpiar solo los campos del formulario, mantener datos de clima y ubicación
+            setFormData(prev => ({
+                ...prev,
+                cantidadCriasAbierta: '',
+                cantidadCriasOperculada: '',
+                colorReina: '',
+                origenReina: '',
+                reportesGenerales: ''
+            }));
+
+        } catch (error) {
+            console.error('Error al enviar datos:', error);
+            setError('Error al guardar los datos en el servidor');
+        }
+    };
 
     return (
         <Wrapper>
             <Header>
                 <Logo src="src/img/Colmenares_del_eje_logo.png" alt="Logo" />
                 <NavContainer>
-                    <LinkNav to='/HivenRegister'>
-                          Crear Colmena
-                    </LinkNav>
+                    <LinkNav to='/HivenRegister'>Crear Colmena</LinkNav>
                     <LinkNav to='/Dashboard'>Visualizar Colmena</LinkNav>
                     <LinkNav to='/ScanQR'>Escanear QR</LinkNav>
                 </NavContainer>
@@ -542,6 +649,8 @@ function HivenRegister() {
             <Main>
                 <FormContainer>
                     <Title>Crear Colmena</Title>
+                    
+                    {/* Formulario original */}
                     <Form onSubmit={handleSubmit}>
                         <Label htmlFor="cantidad-crias-abierta">Cantidad de Cuadros de Cría Abierta</Label>
                         <Input
@@ -550,7 +659,7 @@ function HivenRegister() {
                             name="cantidadCriasAbierta"
                             placeholder="Ingrese la cantidad de crías abierta"
                             required
-                            value = {formData.cantidadCriasAbierta}
+                            value={formData.cantidadCriasAbierta}
                             onChange={handleChange}
                             onKeyDown={preventLetters}
                         />
@@ -576,9 +685,8 @@ function HivenRegister() {
                             required
                         >
                             <option value="">Seleccione una opción</option>
-                            <option value="Si">Si </option>
+                            <option value="Si">Si</option>
                             <option value="No">No</option>
-                         
                         </Select>
 
                         <Label htmlFor="color-reina">Color de la reina</Label>
@@ -592,8 +700,9 @@ function HivenRegister() {
                             <option value="Amarilla">Amarilla</option>
                             <option value="Verde">Verde</option>
                             <option value="Roja">Roja</option>
-                            <option value="Negra">Negra </option>
+                            <option value="Negra">Negra</option>
                         </Select>
+
                         <Label htmlFor="origen-reina">Origen de la reina</Label>
                         <Select
                             id="origen-reina"
@@ -618,24 +727,80 @@ function HivenRegister() {
                             value={formData.reportesGenerales}
                             onChange={handleChange}
                         />
-                        <ButtonContainer>
-                        <Button type="submit">Crear</Button>
-                        </ButtonContainer>
 
+                   
+
+
+                        <ButtonContainer>
+                            <Button type="submit">Crear</Button>
+                        </ButtonContainer>
                     </Form>
                 </FormContainer>
+
+                <br/>
+
                 <Aside>
-                        <h2>Apicultor</h2>
-                        <ProfileImage src="src/img/profile-pic.jpeg" alt="Perfil" />
-                        <h3>Giovanny Molina</h3>
-                        <select style={{ fontFamily: "'Poppins', sans-serif" }}>
-                            <option value="">Colmenas Relacionadas</option>
-                        </select>
+                    <h2>Apicultor</h2>
+                    <ProfileImage src="src/img/profile-pic.jpeg" alt="Perfil" />
+                    <h3>Giovanny Molina</h3>
+                    <select style={{ fontFamily: "'Poppins', sans-serif" }}>
+                        <option value="">Colmenas Relacionadas</option>
+                    </select>
                 </Aside>
+
+                
             </Main>
+
+            
+            {clima && (
+                <ClimaInfo>
+                    <h3>Clima </h3>
+                    
+                    <div className="clima-item">
+                        <span className="label">Temperatura</span>
+                        <span className="value">{clima.temperatura_c}°C / {clima.temperatura_f}°F</span>
+                    </div>
+                    
+                    <div className="clima-item">
+                        <span className="label">Condición</span>
+                        <span className="value">{clima.clima_texto}</span>
+                    </div>
+                    
+                    <div className="clima-item">
+                        <span className="label">Viento</span>
+                        <span className="value">{clima.viento_kph} km/h</span>
+                    </div>
+                    
+                    <div className="clima-item">
+                        <span className="label">Humedad</span>
+                        <span className="value">{clima.humedad}%</span>
+                    </div>
+                    
+                    <div className="clima-item">
+                        <span className="label">Presión</span>
+                        <span className="value">{clima.presion_mb} mb</span>
+                    </div>
+                    
+                    {ubicacion && ( 
+                        <div className="ubicacion-container">
+                            <h3>Ubicación</h3>
+                            <div className="ubicacion-item">
+                                <span className="label">Latitud</span>
+                                <span className="value">{ubicacion.latitude.toFixed(4)}</span>
+                            </div>
+                            <div className="ubicacion-item">
+                                <span className="label">Longitud</span>
+                                <span className="value">{ubicacion.longitude.toFixed(4)}</span>
+                            </div>
+                        </div>
+                    )}
+                </ClimaInfo>
+            )}
+
+             
             <Footer>
-                        <h2>Colmenares del Eje</h2>
-                        <p> @2025 Todos los derechos reservados</p>
+                <h2>Colmenares del Eje</h2>
+                <p> @2025 Todos los derechos reservados</p>
             </Footer>
 
             <PopupOverlay isVisible={showPopup}>
@@ -643,12 +808,9 @@ function HivenRegister() {
                     <SuccessIcon />
                     <PopupTitle>Registro Exitoso</PopupTitle>
                     <p>La colmena ha sido creada exitosamente</p>
-                    <PopupButton onClick={closePopup}>Aceptar</PopupButton>
+                    <PopupButton onClick={() => setShowPopup(false)}>Aceptar</PopupButton>
                 </PopupContent>
             </PopupOverlay>
-
-
-
         </Wrapper>
     );
 }

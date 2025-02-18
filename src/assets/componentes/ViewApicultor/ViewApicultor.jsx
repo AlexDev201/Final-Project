@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useState } from 'react';
 import imagen1 from 'src/img/apicultor_icon.png';
 import imagen2 from 'src/img/apicultor_icon_3.png';
 import imagen3 from 'src/img/apicultor_icon_2.png';
@@ -321,8 +322,156 @@ const Footer = styled.footer`
   }
 `;
 
+//PopUp Styles
+//PopUp Styles
+const PopupOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: ${props => props.isVisible ? 1 : 0};
+  visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
+  transition: opacity 0.2s, visibility 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const PopupContent = styled.div`
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+    transform: ${props => props.isVisible ? 'scale(1)' : 'scale(0.1)'};
+    transition: transform 0.4s ease-in-out;
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+    @media (max-width: ${breakpoints.mobile}) {
+        padding: 1.5rem;
+    }
+`;
+
+
+const CloseIcon = styled.button`
+    width: 30px;
+    height: 30px;
+    background: #f9d77e;
+    border-radius: 100%;
+    position: absolute;
+    left: 88%;
+    bottom: 90%;
+    border: none;
+    &::after {
+        content: 'X';
+        font-size: 20px;
+        color: white;
+    }
+
+    @media (max-width: ${breakpoints.mobile}) {
+        width: 60px;
+        height: 60px;
+        margin: -30px auto 15px;
+        
+        &::after {
+            font-size: 30px;
+        }
+    }
+`;
+
+
+const PopupTitle = styled.h2`
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+
+    @media (max-width: ${breakpoints.mobile}) {
+        font-size: 20px;
+    }
+`;
+
+const PopupButton = styled.button`
+    background: #f9d77e;
+    color: black;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin: 15px;
+    &:hover {
+        background: #f8c150;
+    }
+
+    @media (max-width: ${breakpoints.mobile}) {
+        font-size: 14px;
+        padding: 8px 24px;
+    }
+`;
+
+
+
+
+
+const PopupHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+`;
+
+const PopupBody = styled.div`
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+
+    @media (max-width: ${breakpoints.mobile}) {
+        flex-direction: column;
+        align-items: center;
+    }
+`;
+
+const PopupButtonsContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 20px;
+`;
+
+
+const PopupImageSection = styled.div`
+    flex: 0 0 auto;
+    text-align: center;
+`;
+
+const PopupInfoSection = styled.div`
+    flex: 1;
+    text-align: left;
+
+    p {
+        margin: 8px 0;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    @media (max-width: ${breakpoints.mobile}) {
+        text-align: center;
+    }
+`;
+
+
+
 function ViewApicultor() {
   const navigate = useNavigate();
+  const [selectedApicultorId, setSelectedApicultorId] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  
 
   const apicultores = [
     {id: 12345678, nombre: 'Carlos Parra', imagen: imagen1},
@@ -330,7 +479,40 @@ function ViewApicultor() {
     {id: 33445522, nombre: 'Dayana Navia', imagen: imagen3}
   ];
 
-  const handleSelectChange = (e) => {
+  const infoApicultores = [
+    {
+      id: 12345678,
+      nombres: 'Carlos Jose',
+      apellidos: 'Parra',
+      identificacion : 165343,
+      telefono: 31000000,
+      correo: "Carlos@gmail.com",
+      contactoEmergencia: 12345,
+      imagen: imagen1
+    },
+    {
+      id: 99887766,
+      nombres: 'Daniel Jose',
+      apellidos: 'Delgado',
+      identificacion : 165343,
+      telefono: 31000000,
+      correo: "Daniel@gmail.com",
+      contactoEmergencia : 12345,
+      imagen: imagen1
+    },
+    {
+      id: 33445522,
+      nombres: 'Ingrid Dayana',
+      apellidos: 'Navia',
+      identificacion : 165343,
+      telefono: 31000000,
+      correo: "Dayana@gmail.com",
+      contactoEmergencia: 12345,
+      imagen: imagen1
+    }
+  ]
+
+  const handleSelectChange = (e, apicultorId) => {
     switch(e.target.value) {
       case 'editar':
         navigate('/EditUser');
@@ -341,10 +523,24 @@ function ViewApicultor() {
       case 'recoleccion':
         navigate('/Recoleccion');
         break;
+      case 'ver-detalles' :
+        setSelectedApicultorId(null); // Primero resetea
+        setTimeout(() => {
+          setSelectedApicultorId(apicultorId);
+          setShowPopup(true);
+        }, 10);
       default:
         break;
     }
   };
+
+  const closePopup = () => {
+    setShowPopup(false);
+
+    setTimeout(() => {
+      setSelectedApicultorId(null);
+    }, 400)}
+
 
   return (
     <PageWrapper>
@@ -369,9 +565,11 @@ function ViewApicultor() {
                   <h3>{apicultor.nombre}</h3>
                   
                 </DivSection>
-                <Select onChange={handleSelectChange}>
+                <Select onChange={(e) => handleSelectChange(e, apicultor.id)}>
+
                   <option value="">Seleccionar</option>
                   <option value='editar'>Editar</option>
+                  <option value="ver-detalles">Ver detalles</option>
                 </Select>
               </Section>
             ))}
@@ -389,6 +587,59 @@ function ViewApicultor() {
         <h2>Colmenares del Eje</h2>
         <p>@2025 Todos los derechos reservados</p>
       </Footer>
+
+      <PopupOverlay isVisible={showPopup}>
+    <PopupContent isVisible={showPopup}>
+        <PopupHeader>
+            <Logo src="src/img/Colmenares_del_eje_logo.png" alt="Logo" />
+            <CloseIcon onClick={closePopup}></CloseIcon>
+        </PopupHeader>
+        
+        {selectedApicultorId && (
+            (() => {
+                const selectedApicultor = infoApicultores.find(a => a.id === selectedApicultorId);
+                if (selectedApicultor) {
+                    return (
+                        <>
+                            <PopupTitle>Información del apicultor</PopupTitle>
+                            <PopupBody>
+                                <PopupImageSection>
+                                    <img 
+                                        src={selectedApicultor.imagen} 
+                                        alt={`${selectedApicultor.nombres} ${selectedApicultor.apellidos}`}
+                                        style={{
+                                            width: '150px',
+                                            height: '150px',
+                                            borderRadius: '50%',
+                                            objectFit: 'cover',
+                                            border: '3px solid gray'
+                                        }}
+                                    />
+                                </PopupImageSection>
+                                <PopupInfoSection>
+                                    <p><strong>Nombres:</strong> {selectedApicultor.nombres}</p>
+                                    <p><strong>Apellidos:</strong> {selectedApicultor.apellidos}</p>
+                                    <p><strong>Identificación:</strong> {selectedApicultor.identificacion || 'No especificado'}</p>
+                                    <p><strong>Teléfono:</strong> {selectedApicultor.telefono}</p>
+                                    <p><strong>Correo:</strong> {selectedApicultor.correo}</p>
+                                    <p><strong>Contacto de emergencia:</strong> {selectedApicultor.contactoEmergencia}</p>
+                                </PopupInfoSection>
+                            </PopupBody>
+                            <PopupButtonsContainer>
+                                <PopupButton>Deshabilitar</PopupButton>
+                                <PopupButton>Editar</PopupButton>
+                            </PopupButtonsContainer>
+                        </>
+                    );
+                } else {
+                    return <p>No se encontró información detallada para esta colmena.</p>;
+                }
+            })()
+        )}
+    </PopupContent>
+</PopupOverlay>
+
+
     </PageWrapper>
   );
 };
