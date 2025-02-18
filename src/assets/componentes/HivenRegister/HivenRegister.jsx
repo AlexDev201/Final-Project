@@ -377,7 +377,6 @@ const PopupButton = Styled.button`
     font-size: 16px;
     cursor: pointer;
     margin-top: 20px;
-    
     &:hover {
         background: #f8c150;
     }
@@ -393,7 +392,12 @@ const ClimaInfo = Styled.div`
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     width: 100%;
-    
+    margin: 1px solid gray;
+    border-radius: 8px;
+    max-width: calc(100% - 34.5rem); /* 10rem de margen en cada lado */
+    margin:  0 auto;
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+    margin-bottom: 4rem;
     h3 {
         grid-column: 1 / -1;
         font-size: 1.4rem;
@@ -401,18 +405,29 @@ const ClimaInfo = Styled.div`
         text-align: center;
     }
     
+    @media (max-width: ${breakpoints.mobile}) {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+    
     .clima-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); 
         padding: 0.5rem;
         background-color: #f8f8f8;
         border-radius: 8px;
+        margin-left: 12.5rem;
+        margin-right: 12.5rem;
+        height: 60px;
+        border: 1px solid black;
         
         .label {
-            font-size: 0.9rem;
-            color: #666;
+            font-size: 1.1rem;
+            color: black;
             margin-bottom: 0.2rem;
+            padding-left: 0.5rem;
+            padding-top: 0.5rem;
         }
         
         .value {
@@ -423,11 +438,12 @@ const ClimaInfo = Styled.div`
         
     .ubicacion-container {
         grid-column: 1 / -1;
-        display: grid;  // Cambiado a grid
-        grid-template-columns: repeat(2, 1fr);  // Dos columnas como los items de clima
-        gap: 1rem;
+        display: grid;  
+        grid-template-columns: repeat(2, 1fr);  
+        gap: 0.5rem;
         margin-top: 0.5rem;
-        
+        margin-left: 12.5rem;
+        margin-right: 12.5rem;
         .ubicacion-item {
             display: flex;
             flex-direction: column;
@@ -436,11 +452,13 @@ const ClimaInfo = Styled.div`
             padding: 0.5rem;
             border-radius: 8px;
             margin-bottom: 1rem;
-            
+            border: 1px solid black;
             .label {
-                font-size: 0.9rem;
-                color: #666;
+                font-size: 1.1rem;
+                color: black;
                 margin-bottom: 0.2rem;
+                 padding-left: 0.5rem;
+                padding-top: 0.5rem;
             }
             
             .value {
@@ -452,9 +470,6 @@ const ClimaInfo = Styled.div`
 
     @media (max-width: ${breakpoints.mobile}) {
         grid-template-columns: 1fr;
-        
-        .ubicacion-container {
-            grid-template-columns: 1fr;
         }
     }
 
