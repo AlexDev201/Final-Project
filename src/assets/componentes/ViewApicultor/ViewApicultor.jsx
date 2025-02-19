@@ -322,7 +322,7 @@ const Footer = styled.footer`
   }
 `;
 
-//PopUp Styles
+
 //PopUp Styles
 const PopupOverlay = styled.div`
   position: fixed;
@@ -342,7 +342,7 @@ const PopupOverlay = styled.div`
 
 const PopupContent = styled.div`
     background: white;
-    padding: 2rem;
+    padding: 2.6rem;
     border-radius: 10px;
     text-align: center;
     position: relative;
@@ -395,35 +395,10 @@ const PopupTitle = styled.h2`
     }
 `;
 
-const PopupButton = styled.button`
-    background: #f9d77e;
-    color: black;
-    border: none;
-    padding: 10px 30px;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
+const PopupImageSection = styled.div`
+    flex: 0 0 auto;
+    text-align: center;
     margin-top: 20px;
-    margin: 15px;
-    &:hover {
-        background: #f8c150;
-    }
-
-    @media (max-width: ${breakpoints.mobile}) {
-        font-size: 14px;
-        padding: 8px 24px;
-    }
-`;
-
-
-
-
-
-const PopupHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
 `;
 
 const PopupBody = styled.div`
@@ -437,22 +412,10 @@ const PopupBody = styled.div`
     }
 `;
 
-const PopupButtonsContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 20px;
-`;
-
-
-const PopupImageSection = styled.div`
-    flex: 0 0 auto;
-    text-align: center;
-`;
-
 const PopupInfoSection = styled.div`
     flex: 1;
     text-align: left;
+    padding: 2px;
 
     p {
         margin: 8px 0;
@@ -465,6 +428,38 @@ const PopupInfoSection = styled.div`
     }
 `;
 
+
+const PopupButton = styled.button`
+    background: #f9d77e;
+    color: black;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 15px;
+    border-radius:12px;
+    width: 138px;
+    &:hover {
+        background: #f8c150;
+    }
+
+    @media (max-width: ${breakpoints.mobile}) {
+        font-size: 14px;
+        padding: 8px 24px;
+    }
+`;
+
+const PopupButtonsContainer = styled.div`
+       display: flex;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.2rem;
+      position: absolute;
+      width: 150px;  // El mismo ancho que la imagen
+      margin-top: -140px;  // Un poco más que el alto de la imagen (150px) para dar espacio
+      left: 1.8rem;  // Alinear con el margen izquierdo donde está la imagen
+`;
 
 
 function ViewApicultor() {
@@ -529,7 +524,8 @@ function ViewApicultor() {
           setSelectedApicultorId(apicultorId);
           setShowPopup(true);
         }, 10);
-      default:
+        break;
+        default:
         break;
     }
   };
@@ -588,12 +584,11 @@ function ViewApicultor() {
         <p>@2025 Todos los derechos reservados</p>
       </Footer>
 
-      <PopupOverlay isVisible={showPopup}>
+    <PopupOverlay isVisible={showPopup}>
     <PopupContent isVisible={showPopup}>
-        <PopupHeader>
+      
             <Logo src="src/img/Colmenares_del_eje_logo.png" alt="Logo" />
             <CloseIcon onClick={closePopup}></CloseIcon>
-        </PopupHeader>
         
         {selectedApicultorId && (
             (() => {
@@ -626,8 +621,8 @@ function ViewApicultor() {
                                 </PopupInfoSection>
                             </PopupBody>
                             <PopupButtonsContainer>
-                                <PopupButton>Deshabilitar</PopupButton>
                                 <PopupButton>Editar</PopupButton>
+                                <PopupButton>Deshabilitar</PopupButton>
                             </PopupButtonsContainer>
                         </>
                     );
@@ -636,7 +631,7 @@ function ViewApicultor() {
                 }
             })()
         )}
-    </PopupContent>
+  </PopupContent>
 </PopupOverlay>
 
 

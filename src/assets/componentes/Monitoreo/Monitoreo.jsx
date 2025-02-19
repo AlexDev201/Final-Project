@@ -21,7 +21,7 @@ const Header = Styled.header`
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius:0 0 12px 12px;
     position: fixed;
-     width: 100%;
+     width: 98.5%;
     top:0,
     margin: 0,
     z-index: 1000
@@ -60,6 +60,7 @@ const LinkNav = Styled(NavLink)`
     font-size: 45px;
     background-color :rgb(246, 201, 110);
     border-radius: 12px;
+    gap: 50px;  
   }
 `;
 
@@ -68,10 +69,12 @@ const LinkNav = Styled(NavLink)`
 const Main = Styled.main`
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
+    flex-direction: row;
     flex: 1;
     padding: 1rem;
-    padding-top: calc(150px + 1rem);
+    padding-top: calc(170px + 1rem);
+    gap: 5rem;
 `;
 
 const Form = Styled.form`
@@ -142,6 +145,35 @@ const Button = Styled.button`
     }
 `;
 
+//Aside
+
+const Aside = Styled.aside`
+    width: 450px;
+    flex: 0 0 auto;
+    min-width: 250px;
+    max-width: 300px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid gray;
+    font-size: 1.6rem;
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+    margin-bottom: 7rem;
+`;
+
+const ProfileImage = Styled.img`
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid ##f9d77e;;
+        border: 1px solid grey;
+`;
 
 const Footer = Styled.footer`
     background-color: #f9d77e;
@@ -189,6 +221,14 @@ function Monitoreo(){
                         <Button>Enviar</Button>
                     </Form>
                 </FormContainer>
+                <Aside>
+                            <h2>Apicultor</h2>
+                            <ProfileImage src="src/img/profile-pic.jpeg" alt="Perfil" />
+                            <h3>Giovanny Molina</h3>
+                            <select style={{ fontFamily: "'Poppins', sans-serif" }}>
+                                <option value="">Colmenas Relacionadas</option>
+                            </select>
+                </Aside>
             </Main>
     
             <Footer>

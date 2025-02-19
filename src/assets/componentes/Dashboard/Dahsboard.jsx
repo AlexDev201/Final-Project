@@ -325,38 +325,84 @@ const Footer = styled.footer`
 
 //PopUp Styles
 const PopupOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  opacity: ${props => props.isVisible ? 1 : 0};
-  visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
-  transition: opacity 0.2s, visibility 0.2s;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.5);
+opacity: ${props => props.isVisible ? 1 : 0};
+visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
+transition: opacity 0.2s, visibility 0.2s;
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1000;
 `;
 
 const PopupContent = styled.div`
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    text-align: center;
-    position: relative;
-    width: 90%;
-    max-width: 400px;
-    margin: 0 auto;
-    transform: ${props => props.isVisible ? 'scale(1)' : 'scale(0.1)'};
-    transition: transform 0.4s ease-in-out;
-    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
-    @media (max-width: ${breakpoints.mobile}) {
-        padding: 1.5rem;
-    }
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+  margin: 0 auto;
+  transform: ${props => props.isVisible ? 'scale(1)' : 'scale(0.1)'};
+  transition: transform 0.4s ease-in-out;
+  box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+  @media (max-width: ${breakpoints.mobile}) {
+      padding: 1.5rem;
+  }
 `;
 
+
+
+const PopupHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const PopupBody = styled.div`
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+
+  @media (max-width: ${breakpoints.mobile}) {
+      flex-direction: column;
+      align-items: center;
+  }
+`;
+
+
+const PopupImageSection = styled.div`
+  flex: 0 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 19.5px;
+`;
+
+const PopupInfoSection = styled.div`
+  flex: 1;
+  text-align: left;
+  padding: 4px:
+
+  p {
+      margin: 8px 0;
+      font-size: 1rem;
+      line-height: 1.5;
+  }
+
+  @media (max-width: ${breakpoints.mobile}) {
+      text-align: center;
+  }
+`;
 
 const CloseIcon = styled.button`
     width: 30px;
@@ -395,6 +441,20 @@ const PopupTitle = styled.h2`
     }
 `;
 
+
+
+const PopupButtonsContainer = styled.div`
+   display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  position: absolute;
+  width: 150px;  // El mismo ancho que la imagen
+  margin-top: -190px;  // Un poco más que el alto de la imagen (150px) para dar espacio
+  left: 1.8rem;  // Alinear con el margen izquierdo donde está la imagen
+`;
+
+
 const PopupButton = styled.button`
     background: #f9d77e;
     color: black;
@@ -405,6 +465,10 @@ const PopupButton = styled.button`
     cursor: pointer;
     margin-top: 20px;
     margin: 15px;
+    height:40px;
+    width:138px;
+    text-align:center;
+    border-radius: 12px;
     &:hover {
         background: #f8c150;
     }
@@ -454,6 +518,7 @@ function Dashboard() {
       cod: 98712,
       cantidadCriasAbierta: 25,
       cantidadCriasOperculada: 43,
+      presenciaReina: 'Si',
       colorReina: 'Negra',
       origenReina : 'Europea',
       reportesGenerales: 'Sin novedad'
@@ -516,7 +581,10 @@ function Dashboard() {
           <Main>
             {colmenasTotales.map((colmena) => (
               <Section key={colmena.id}>
-                <Img src={colmena.imagen} alt="Imagen de la colmena" />
+                <Img src={colmena.imagen} alt="Imagen de la colmena" 
+                style={{
+                  
+                }}/>
                 <DivSection>
               <h3>Cod {colmena.id}</h3>
               {colmena.finca && <p>{colmena.finca}</p>}
@@ -557,26 +625,42 @@ function Dashboard() {
               const selectedColmena = colmenasCompletas.find(c => c.cod === selectedColmenaId);
               if (selectedColmena) {
                 return (
-                  <div>
-                    <PopupTitle>Información de la colmena</PopupTitle>
-                    <p>Número de cuadros de cría abierta: {selectedColmena.cantidadCriasAbierta}</p>
-                    <p>Número de cuadros de cría operculada: {selectedColmena.cantidadCriasOperculada}</p>
-                    <p>Presencia de la reina: {selectedColmena.presenciaReina || 'No especificado'}</p>
-                    <p>Color de la reina: {selectedColmena.colorReina}</p>
-                    <p>Origen de la reina: {selectedColmena.origenReina}</p>
-                    <p>Reportes Generales: {selectedColmena.reportesGenerales}</p>
-                  </div>
-                );
-              } else {
-                return <p>No se encontró información detallada para esta colmena.</p>;
+                 <>
+                            <PopupTitle>Información de la colmena</PopupTitle>
+                            <PopupBody>
+                                <PopupImageSection>
+                                    <img 
+                                        src={imagen1} 
+                                        style={{
+                                            width: '150px',
+                                            height: '150px',
+                                            borderRadius: '50%',
+                                            objectFit: 'cover',
+                                            border: '3px solid gray'
+                                        }}
+                                    />
+                                </PopupImageSection>
+                                <PopupInfoSection>
+                                    <p><strong>Cantidad cuadros cria abierta:</strong> {selectedColmena.cantidadCriasAbierta}</p>
+                                    <p><strong>Cantidad de cuadros de cria operculada:</strong> {selectedColmena.cantidadCriasOperculada}</p>
+                                    <p><strong>Presencia reina:</strong> {selectedColmena.presenciaReina || 'No especificado'}</p>
+                                    <p><strong>ColorReina:</strong> {selectedColmena.colorReina}</p>
+                                    <p><strong>Origen Reina :</strong> {selectedColmena.origenReina}</p>
+                                    <p><strong>Reportes generales :</strong> {selectedColmena.reportesGenerales}</p>
+                                </PopupInfoSection>
+                            </PopupBody>
+                            <PopupButtonsContainer>
+                                <PopupButton>Editar</PopupButton>
+                                <PopupButton>Deshabilitar</PopupButton>
+                            </PopupButtonsContainer>
+                        </>
+                ); } else {
+                  return <p>No se encontró información detallada para esta colmena.</p>;
               }
-            })()
-          )}
-          <PopupButton>Deshabilitar</PopupButton>
-          <PopupButton>Editar</PopupButton>
+          })()
+        )}
         </PopupContent>
-</PopupOverlay>
-       
+        </PopupOverlay>
     </PageWrapper>
   );
 };

@@ -64,10 +64,13 @@ const LinkNav = Styled(NavLink)`
 const Main = Styled.main`
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
+    flex-direction: row;
     flex: 1;
     padding: 1rem;
-    padding-top: calc(120px + 1rem);
+    padding-top: calc(150px + 1rem);
+    margin: auto;   
+    gap: 8.9rem;
 `;
 
 const Form = Styled.form`
@@ -126,6 +129,36 @@ const Button = Styled.button`
     &:hover {
         background-color: #f8c150;
     }
+`;
+
+//Aside
+
+const Aside = Styled.aside`
+    width: 450px;
+    flex: 0 0 auto;
+    min-width: 200px;
+    max-width: 250px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid gray;
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+    margin-bottom: 5rem;
+    
+`;
+
+const ProfileImage = Styled.img`
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid ##f9d77e;;
+        border: 1px solid grey;
 `;
 
 const Footer = Styled.footer`
@@ -319,6 +352,15 @@ function Recoleccion() {
                         <Button type="submit">Enviar</Button>
                     </Form>
                 </FormContainer>
+
+                <Aside>
+                            <h2>Apicultor</h2>
+                            <ProfileImage src="src/img/profile-pic.jpeg" alt="Perfil" />
+                            <h3>Giovanny Molina</h3>
+                            <select style={{ fontFamily: "'Poppins', sans-serif" }}>
+                                <option value="">Colmenas Relacionadas</option>
+                            </select>
+                </Aside>
             </Main>
 
             <Footer>
