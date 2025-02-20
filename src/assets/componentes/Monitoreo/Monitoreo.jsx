@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import Styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
+import { useState } from 'react';
+
 
 const Wrapper = Styled.div`
     display: flex;
@@ -185,6 +187,22 @@ const Footer = Styled.footer`
 `;
 
 function Monitoreo(){
+
+    const [formDataMonitoreo, setFormDataMonitoreo] = useState({
+        fechaMonitoreo: '',
+        onservacionesReina: '',
+        observacionesAlimento:'',
+        ObservacionesReina: '',
+        observacionesGenerales: '',
+    })
+
+
+    const handleSubmit = (e) => (
+        e.preventDefault()
+
+
+    )
+
     return (
         <Wrapper>
              <Header>

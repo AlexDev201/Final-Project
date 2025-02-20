@@ -525,12 +525,7 @@ function Dashboard() {
     }
   ]
 
-  //Obtener todas las colmenas guardadas en el localStorage
-  const colmenasGuardadas = JSON.parse(localStorage.getItem('colmenas')) || [];
-
-  //Combinar ambas arrays
   
-  const colmenasTotales = [...colmenasIniciales, ...colmenasGuardadas];
 
   
 
@@ -579,7 +574,7 @@ function Dashboard() {
 
         <Container>
           <Main>
-            {colmenasTotales.map((colmena) => (
+            {colmenasIniciales.map((colmena) => (
               <Section key={colmena.id}>
                 <Img src={colmena.imagen} alt="Imagen de la colmena" 
                 style={{

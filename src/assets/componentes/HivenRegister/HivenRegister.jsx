@@ -134,7 +134,7 @@ const FormContainer = Styled.div`
     padding: 1.5rem;
     width: 450px;
     min-height: 600px;
-    height: auto;
+    height: 100%;
     border: 1px solid grey;
     margin: 0;
     box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
@@ -245,19 +245,28 @@ const Button = Styled.button`
 
 const Aside = Styled.aside`
     width: 450px;
-    min-height: 600px;
+    min-height: 300px;
     height: auto;
     background-color: white;
     border-radius: 10px;
     padding: 1.5rem;
+    padding-bottom:4px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 3px;
     border: 1px solid gray;
     font-size: 1.6rem;
     box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
+
+    h2 {
+        margin: 0;
+        color: rgb(0, 0, 0);
+        font-size: 1.8rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
 
     @media (max-width: ${breakpoints.laptop}) {
         width: 95%;
@@ -268,6 +277,11 @@ const Aside = Styled.aside`
     @media (max-width: ${breakpoints.mobile}) {
         font-size: 1.2rem;
         padding: 1.5rem;
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
     }
 `;
 
@@ -388,50 +402,42 @@ const PopupButton = Styled.button`
 `;
 
 const ClimaInfo = Styled.div`
+    width: 450px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 0.5rem;
     width: 100%;
-    margin: 1px solid gray;
+    margin: 0.5rem 0;
     border-radius: 8px;
-    max-width: calc(100% - 34.5rem); /* 10rem de margen en cada lado */
-    margin:  0 auto;
     box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
-    margin-bottom: 4rem;
+    padding: 1rem;
+    
     h3 {
         grid-column: 1 / -1;
-        font-size: 1.4rem;
-        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+        margin-bottom: 0.3rem;
         text-align: center;
     }
-    
-    @media (max-width: ${breakpoints.mobile}) {
-            font-size: 1.4rem;
-            margin-bottom: 1.5rem;
-        }
     
     .clima-item {
         grid-column: 1 / -1;
         display: grid;
         grid-template-columns: repeat(2, 1fr); 
-        padding: 0.5rem;
+        padding: 0;
         background-color: #f8f8f8;
         border-radius: 8px;
-        margin-left: 12.5rem;
-        margin-right: 12.5rem;
-        height: 60px;
-        border: 1px solid black;
+        margin: 0.1rem 0;
+        height: 35px;
         
         .label {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: black;
-            margin-bottom: 0.2rem;
             padding-left: 0.5rem;
-            padding-top: 0.5rem;
+            padding-top: 0.3rem;
         }
         
         .value {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 500;
         }
     }
@@ -440,41 +446,39 @@ const ClimaInfo = Styled.div`
         grid-column: 1 / -1;
         display: grid;  
         grid-template-columns: repeat(2, 1fr);  
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-        margin-left: 12.5rem;
-        margin-right: 12.5rem;
+        gap: 0.3rem;
+        margin-top: 0.3rem;
+        
         .ubicacion-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             background-color: #f8f8f8;
-            padding: 0.5rem;
+            padding: 0.3rem;
             border-radius: 8px;
-            margin-bottom: 1rem;
-            border: 1px solid black;
+            
             .label {
-                font-size: 1.1rem;
+                font-size: 0.9rem;
                 color: black;
-                margin-bottom: 0.2rem;
-                 padding-left: 0.5rem;
-                padding-top: 0.5rem;
+                padding-top: 0;
             }
             
             .value {
-                font-size: 1.1rem;
+                font-size: 0.9rem;
                 font-weight: 500;
             }
         }
     }
-
-    @media (max-width: ${breakpoints.mobile}) {
-        grid-template-columns: 1fr;
-        }
-    }
-
-
 `;
+
+const RightColumn = Styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 450px;
+    height: 100%;
+    max-height: 600px; // Altura máxima igual a FormContainer
+    
+    `;
 
 function HivenRegister() {
     const [showPopup, setShowPopup] = useState(false);
@@ -752,7 +756,7 @@ function HivenRegister() {
                     </Form>
                 </FormContainer>
 
-                <br/>
+                <RightColumn>
 
                 <Aside>
                     <h2>Apicultor</h2>
@@ -762,12 +766,7 @@ function HivenRegister() {
                         <option value="">Colmenas Relacionadas</option>
                     </select>
                 </Aside>
-
-                
-            </Main>
-
-            
-            {clima && (
+                {clima && (
                 <ClimaInfo>
                     <h3>Clima </h3>
                     
@@ -811,6 +810,16 @@ function HivenRegister() {
                     )}
                 </ClimaInfo>
             )}
+
+
+
+
+                </RightColumn>
+
+              
+
+                
+            </Main>
 
              
             <Footer>
