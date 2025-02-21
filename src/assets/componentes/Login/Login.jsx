@@ -19,7 +19,7 @@ const Header = Styled.header`
     background-color: #f9d77e;
     padding: 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 65px;
+    height: 110px;
     border-radius: 0 0 12px 12px;
 
     @media (max-width: 768px) {
@@ -152,7 +152,7 @@ const Footer = Styled.footer`
     padding: 0.5rem;
     font-size: 0.75rem;
     border-radius: 12px 12px 0 0;
-
+    height: 90px;
     @media (max-width: 768px) {
         font-size: 0.6rem;
         padding: 0.3rem;

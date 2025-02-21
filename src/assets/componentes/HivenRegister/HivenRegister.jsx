@@ -245,7 +245,7 @@ const Button = Styled.button`
 
 const Aside = Styled.aside`
     width: 450px;
-    min-height: 300px;
+    min-height: 360px;
     height: auto;
     background-color: white;
     border-radius: 10px;
@@ -258,6 +258,7 @@ const Aside = Styled.aside`
     gap: 3px;
     border: 1px solid gray;
     font-size: 1.6rem;
+    margin-bottom: 1.5rem;
     box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
 
     h2 {
@@ -315,6 +316,7 @@ const Footer = Styled.footer`
     }
 `;
 
+//PopUp content
 const PopupOverlay = Styled.div`
     position: fixed;
     top: 0;
@@ -400,77 +402,53 @@ const PopupButton = Styled.button`
         padding: 8px 24px;
     }
 `;
-
+//Estilos del contenido de la API
 const ClimaInfo = Styled.div`
     width: 450px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem;
     width: 100%;
     margin: 0.5rem 0;
     border-radius: 8px;
     box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.25);
     padding: 1rem;
-    
+
     h3 {
-        grid-column: 1 / -1;
         font-size: 1.2rem;
-        margin-bottom: 0.3rem;
         text-align: center;
-    }
-    
-    .clima-item {
-        grid-column: 1 / -1;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); 
-        padding: 0;
-        background-color: #f8f8f8;
-        border-radius: 8px;
-        margin: 0.1rem 0;
-        height: 35px;
-        
-        .label {
-            font-size: 1rem;
-            color: black;
-            padding-left: 0.5rem;
-            padding-top: 0.3rem;
-        }
-        
-        .value {
-            font-size: 1rem;
-            font-weight: 500;
-        }
-    }
-        
-    .ubicacion-container {
-        grid-column: 1 / -1;
-        display: grid;  
-        grid-template-columns: repeat(2, 1fr);  
-        gap: 0.3rem;
-        margin-top: 0.3rem;
-        
-        .ubicacion-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f8f8f8;
-            padding: 0.3rem;
-            border-radius: 8px;
-            
-            .label {
-                font-size: 0.9rem;
-                color: black;
-                padding-top: 0;
-            }
-            
-            .value {
-                font-size: 0.9rem;
-                font-weight: 500;
-            }
-        }
+        margin-bottom: 1rem;
     }
 `;
 
+const DataItem = Styled.div`
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    padding: 0.5rem;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    margin: 0.1rem 0;
+    align-items: center;
+    gap: 0.5rem;
+
+    .icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .label {
+        font-size: 1rem;
+        color: black;
+    }
+
+    .value {
+        font-size: 1rem;
+        font-weight: 500;
+        text-align: right;
+    }
+`;
+
+//Contenedor para ubicar el Aside y el contenedor de la API
 const RightColumn = Styled.div`
     display: flex;
     flex-direction: column;
@@ -546,7 +524,8 @@ function HivenRegister() {
                     clima_texto: current.condition.text,
                     viento_kph: current.wind_kph,
                     presion_mb: current.pressure_mb,
-                    humedad: current.humidity
+                    humedad: current.humidity,
+                    icono: current.condition.icon
                 });
 
                 // Actualizar formData con datos de ubicación y clima
@@ -766,51 +745,40 @@ function HivenRegister() {
                         <option value="">Colmenas Relacionadas</option>
                     </select>
                 </Aside>
-                {clima && (
-                <ClimaInfo>
-                    <h3>Clima </h3>
-                    
-                    <div className="clima-item">
-                        <span className="label">Temperatura</span>
-                        <span className="value">{clima.temperatura_c}°C / {clima.temperatura_f}°F</span>
-                    </div>
-                    
-                    <div className="clima-item">
-                        <span className="label">Condición</span>
-                        <span className="value">{clima.clima_texto}</span>
-                    </div>
-                    
-                    <div className="clima-item">
-                        <span className="label">Viento</span>
-                        <span className="value">{clima.viento_kph} km/h</span>
-                    </div>
-                    
-                    <div className="clima-item">
-                        <span className="label">Humedad</span>
-                        <span className="value">{clima.humedad}%</span>
-                    </div>
-                    
-                    <div className="clima-item">
-                        <span className="label">Presión</span>
-                        <span className="value">{clima.presion_mb} mb</span>
-                    </div>
-                    
-                    {ubicacion && ( 
-                        <div className="ubicacion-container">
-                            <h3>Ubicación</h3>
-                            <div className="ubicacion-item">
-                                <span className="label">Latitud</span>
-                                <span className="value">{ubicacion.latitude.toFixed(4)}</span>
-                            </div>
-                            <div className="ubicacion-item">
-                                <span className="label">Longitud</span>
-                                <span className="value">{ubicacion.longitude.toFixed(4)}</span>
-                            </div>
-                        </div>
-                    )}
-                </ClimaInfo>
-            )}
+                {clima && ubicacion && (
+                        <ClimaInfo>
+                            <h3>Datos del Clima</h3>
+                            
+                            <DataItem>
+                                <img src={`https:${clima.icono}`} alt="clima" className="icon"/>
+                                <span className="label">Condición</span>
+                                <span className="value">{clima.clima_texto}</span>
+                            </DataItem>
 
+                            <DataItem>
+                                <img src="//cdn.weatherapi.com/weather/64x64/day/116.png" alt="temperatura" className="icon"/>
+                                <span className="label">Temperatura</span>
+                                <span className="value">{clima.temperatura_c}°C</span>
+                            </DataItem>
+
+                            <DataItem>
+                                <img src="//cdn.weatherapi.com/weather/64x64/day/119.png" alt="viento" className="icon"/>
+                                <span className="label">Viento</span>
+                                <span className="value">{clima.viento_kph} km/h</span>
+                            </DataItem>
+
+                            <DataItem>
+                                <img src="//cdn.weatherapi.com/weather/64x64/day/263.png" alt="humedad" className="icon"/>
+                                <span className="label">Humedad</span>
+                                <span className="value">{clima.humedad}%</span>
+                            </DataItem>
+                            <DataItem>
+                                <img src="//cdn.weatherapi.com/weather/64x64/day/116.png" alt="ubicación" className="icon"/>
+                                <span className="label">Latitud/Altitud</span>
+                                <span className="value">{ubicacion.latitude.toFixed(2)}, {ubicacion.longitude.toFixed(2)}</span>
+                            </DataItem>
+                        </ClimaInfo>
+                    )}
 
 
 
