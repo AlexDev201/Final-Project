@@ -425,7 +425,6 @@ const DataItem = Styled.div`
     display: grid;
     grid-template-columns: auto 1fr auto;
     padding: 0.5rem;
-    background-color: #f8f8f8;
     border-radius: 8px;
     margin: 0.1rem 0;
     align-items: center;
